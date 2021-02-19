@@ -37,7 +37,7 @@ import java.lang.annotation.*;
 /**
  * Provides an easy and non-centralized way of determining the OpMode list
  * shown on an FTC Driver Station.  Put an {@link Autonomous} annotation on
- * your autonomous OpModes that you want to show up in the driver station display.
+ * your autonomous org.firstinspires.ftc.teamcode.OpModes that you want to show up in the driver station display.
  *
  * If you want to temporarily disable an opmode, then set then also add
  * a {@link Disabled} annotation to it.
@@ -59,7 +59,7 @@ public @interface Autonomous
     String name() default "";
 
     /**
-     * Optionally indicates a group of other OpModes with which the annotated
+     * Optionally indicates a group of other org.firstinspires.ftc.teamcode.OpModes with which the annotated
      * OpMode should be sorted on the driver station OpMode list.
      * @return the group into which the annotated OpMode is to be categorized
      */

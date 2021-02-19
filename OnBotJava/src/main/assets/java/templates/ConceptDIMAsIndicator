@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.org.firstinspires.ftc.teamcode.drive.util.ElapsedTime;
 
 /**
  * This OpMode illustrates using the Device Interface Module as a signalling device.

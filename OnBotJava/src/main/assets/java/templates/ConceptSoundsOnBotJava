@@ -49,7 +49,7 @@ import java.io.File;
  *  This is done in this sample for the two sound files.  silver.wav and gold.wav
  *
  *  You can put the files in a variety of soundPaths, but we recommend you put them in the /FIRST/blocks/sounds folder.
- *  Your OpModes will have guaranteed access to this folder, and you can transfer files into this folder using the BLOCKS web page.
+ *  Your org.firstinspires.ftc.teamcode.OpModes will have guaranteed access to this folder, and you can transfer files into this folder using the BLOCKS web page.
  *  --  There is a link called "sounds" on the right hand side of the color bar on the BLOCKS page that can be used to send sound files to this folder by default.
  *  Or you can use Windows File Manager, or ADB to transfer the sound files
  *
@@ -63,7 +63,7 @@ import java.io.File;
 @Disabled
 public class ConceptSoundsOnBotJava extends LinearOpMode {
 
-    // Point to sound files on the phone's drive
+    // Point to sound files on the phone's org.firstinspires.ftc.teamcode.drive
     private String soundPath = "/FIRST/blocks/sounds";
     private File goldFile   = new File("/sdcard" + soundPath + "/gold.wav");
     private File silverFile = new File("/sdcard" + soundPath + "/silver.wav");

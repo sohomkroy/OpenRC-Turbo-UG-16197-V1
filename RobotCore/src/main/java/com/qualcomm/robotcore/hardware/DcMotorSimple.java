@@ -40,7 +40,7 @@ public interface DcMotorSimple extends HardwareDevice
     /**
      * DcMotors can be configured to internally reverse the values
      * to which, e.g., their motor power is set. This makes it easy
-     * to have drive train motors on two sides of a robot: during initialization,
+     * to have org.firstinspires.ftc.teamcode.drive train motors on two sides of a robot: during initialization,
      * one would be set at at forward, the other at reverse, and the
      * difference between the two in that respect could be thereafter ignored.
      *

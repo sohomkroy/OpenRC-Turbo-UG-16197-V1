@@ -96,7 +96,7 @@ public interface AMSColorSensor extends ColorSensor, NormalizedColorSensor
          * the proximity LED is pulsed each cycle. */
         public int proximityPulseCount = 8;
 
-        /** when using proximity, controls the nominal proximity LED drive current */
+        /** when using proximity, controls the nominal proximity LED org.firstinspires.ftc.teamcode.drive current */
         public LEDDrive ledDrive = LEDDrive.Percent12_5;
 
         /** the maximum possible raw proximity value read. is sensitive to ledDrive

@@ -44,7 +44,7 @@ import org.firstinspires.ftc.robotcore.internal.system.MemberwiseCloneable;
 import java.util.concurrent.Executor;
 
 /**
- * {@link Continuation} provides mechanisms for continuing subsequent, later work on a different
+ * {@link Continuation} provides org.firstinspires.ftc.teamcode.mechanisms for continuing subsequent, later work on a different
  * thread (either a handler thread or a worker thread) along with a contextual object that will
  * be present at such time. The latter is usually a consumer of some type, that will thus receive
  * the result of some computation with threading all taken care of neat and tidy.

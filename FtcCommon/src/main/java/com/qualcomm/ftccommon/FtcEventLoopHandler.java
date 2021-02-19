@@ -334,7 +334,7 @@ public class FtcEventLoopHandler implements BatteryChecker.BatteryWatcher {
       // the read is always out of data already in cache, and takes about 30 microseconds (as measured).
       // The legacy motor controller, on the other hand, because of the modality of the underlying
       // legacy module, doesn't always automatically read this data. Indeed, if the user is doing mostly
-      // writes (as is often the case in OpModes that basically just set the motor power), the legacy
+      // writes (as is often the case in org.firstinspires.ftc.teamcode.OpModes that basically just set the motor power), the legacy
       // module won't be switch to read mode ever, *except* for a voltage request here, and that switch
       // will take tens of milliseconds. To *always* take that timing hit when refreshing user telemetry
       // is unreasonable.

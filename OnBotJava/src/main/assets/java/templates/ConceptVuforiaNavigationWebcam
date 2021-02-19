@@ -34,8 +34,8 @@ import android.graphics.Bitmap;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.RobotLog;
-import com.qualcomm.robotcore.util.ThreadPool;
+import com.qualcomm.robotcore.org.firstinspires.ftc.teamcode.drive.util.RobotLog;
+import com.qualcomm.robotcore.org.firstinspires.ftc.teamcode.drive.util.ThreadPool;
 import com.vuforia.Frame;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -57,9 +57,9 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.org.firstinspires.ftc.teamcode.drive.util.ArrayList;
+import java.org.firstinspires.ftc.teamcode.drive.util.List;
+import java.org.firstinspires.ftc.teamcode.drive.util.Locale;
 
 /**
  * This 2016-2017 OpMode illustrates the basics of using the Vuforia localizer to determine

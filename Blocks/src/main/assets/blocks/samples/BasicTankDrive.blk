@@ -6,7 +6,7 @@
 <comment pinned="false" h="80" w="160">This function is executed when this Op Mode is selected from the Driver Station.</comment>
 <statement name="STACK">
 <block type="comment" id="2E)2A*`b^PiWrgwVLCzD">
-<field name="COMMENT">Reverse one of the drive motors.</field>
+<field name="COMMENT">Reverse one of the org.firstinspires.ftc.teamcode.drive motors.</field>
 <next>
 <block type="dcMotor_setProperty_Direction" id="eq?6z=8[X(p{)!kj=ljm">
 <field name="IDENTIFIER">right_driveAsDcMotor</field>

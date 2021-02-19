@@ -34,10 +34,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.org.firstinspires.ftc.teamcode.drive.util.ElapsedTime;
 
-import java.util.Iterator;
-import java.util.List;
+import java.org.firstinspires.ftc.teamcode.drive.util.Iterator;
+import java.org.firstinspires.ftc.teamcode.drive.util.List;
 
     /*
         This sample illustrates how to use the Expansion Hub's Bulk-Read feature to speed up control cycle times.

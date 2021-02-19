@@ -97,7 +97,7 @@ public interface BroadcomColorSensor extends ColorSensor, NormalizedColorSensor
         /** periodic measurement rate for the light sensor */
         public LSMeasurementRate lightSensorMeasRate = LSMeasurementRate.R100ms;
 
-        /** when using proximity, controls the nominal proximity LED drive current */
+        /** when using proximity, controls the nominal proximity LED org.firstinspires.ftc.teamcode.drive current */
         public LEDCurrent ledCurrent = LEDCurrent.CURRENT_125mA;
 
         /** the maximum possible raw proximity value read. is sensitive to ledDrive

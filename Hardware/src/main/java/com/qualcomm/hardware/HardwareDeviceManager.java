@@ -434,7 +434,7 @@ public class HardwareDeviceManager implements DeviceManager {
 
 
   /* (non-Javadoc)
-   * @see com.qualcomm.hardware.DeviceManager#createUsbDcMotorController(com.qualcomm.robotcore.util.SerialNumber)
+   * @see com.qualcomm.hardware.DeviceManager#createUsbDcMotorController(com.qualcomm.robotcore.org.firstinspires.ftc.teamcode.drive.util.SerialNumber)
    */
   @Override
   public DcMotorController createUsbDcMotorController(final SerialNumber serialNumber, String name)
@@ -479,7 +479,7 @@ public class HardwareDeviceManager implements DeviceManager {
 
 
   /* (non-Javadoc)
-   * @see com.qualcomm.hardware.DeviceManager#createUsbServoController(com.qualcomm.robotcore.util.SerialNumber)
+   * @see com.qualcomm.hardware.DeviceManager#createUsbServoController(com.qualcomm.robotcore.org.firstinspires.ftc.teamcode.drive.util.SerialNumber)
    */
   @Override
   public ServoController createUsbServoController(final SerialNumber serialNumber, String name)
@@ -581,7 +581,7 @@ public class HardwareDeviceManager implements DeviceManager {
   }
 
   /* (non-Javadoc)
-   * @see com.qualcomm.hardware.DeviceManager#createUsbLegacyModule(com.qualcomm.robotcore.util.SerialNumber)
+   * @see com.qualcomm.hardware.DeviceManager#createUsbLegacyModule(com.qualcomm.robotcore.org.firstinspires.ftc.teamcode.drive.util.SerialNumber)
    */
   @Override
   public LegacyModule createUsbLegacyModule(final SerialNumber serialNumber, String name)

@@ -69,7 +69,7 @@ public class MimeTypesUtil {
     MIME_TYPES_BY_EXT.put("sfnt", "application/font-sfnt");
   }
 
-  // Prevent instantiation of util class.
+  // Prevent instantiation of org.firstinspires.ftc.teamcode.drive.util class.
   private MimeTypesUtil() {
   }
 

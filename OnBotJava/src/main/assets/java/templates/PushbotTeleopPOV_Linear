@@ -32,7 +32,7 @@ package org.firstinspires.ftc.robotcontroller.external.samples;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.org.firstinspires.ftc.teamcode.drive.util.Range;
 
 /**
  * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
@@ -61,7 +61,7 @@ public class PushbotTeleopPOV_Linear extends LinearOpMode {
     public void runOpMode() {
         double left;
         double right;
-        double drive;
+        double org.firstinspires.ftc.teamcode.drive;
         double turn;
         double max;
 
@@ -82,13 +82,13 @@ public class PushbotTeleopPOV_Linear extends LinearOpMode {
 
             // Run wheels in POV mode (note: The joystick goes negative when pushed forwards, so negate it)
             // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
-            // This way it's also easy to just drive straight, or just turn.
-            drive = -gamepad1.left_stick_y;
+            // This way it's also easy to just org.firstinspires.ftc.teamcode.drive straight, or just turn.
+            org.firstinspires.ftc.teamcode.drive = -gamepad1.left_stick_y;
             turn  =  gamepad1.right_stick_x;
 
-            // Combine drive and turn for blended motion.
-            left  = drive + turn;
-            right = drive - turn;
+            // Combine org.firstinspires.ftc.teamcode.drive and turn for blended motion.
+            left  = org.firstinspires.ftc.teamcode.drive + turn;
+            right = org.firstinspires.ftc.teamcode.drive - turn;
 
             // Normalize the values so neither exceed +/- 1.0
             max = Math.max(Math.abs(left), Math.abs(right));

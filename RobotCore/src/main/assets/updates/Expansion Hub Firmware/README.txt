@@ -1,1 +1,1 @@
-Always update the com.qualcomm.robotcore.util.IncludedFirmwareFileInfo class when updating this file
+Always update the com.qualcomm.robotcore.org.firstinspires.ftc.teamcode.drive.util.IncludedFirmwareFileInfo class when updating this file

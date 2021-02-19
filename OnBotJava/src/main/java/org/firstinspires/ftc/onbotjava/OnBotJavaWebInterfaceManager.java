@@ -53,7 +53,7 @@ public class OnBotJavaWebInterfaceManager {
             "com/qualcomm/robotcore/eventloop/opmode",
             "com/qualcomm/robotcore/hardware",
             "com/qualcomm/robotcore/robot",
-            "com/qualcomm/robotcore/util",
+            "com/qualcomm/robotcore/org.firstinspires.ftc.teamcode.drive.util",
             "com/qualcomm/hardware",
             "java/io",
             "java/lang",

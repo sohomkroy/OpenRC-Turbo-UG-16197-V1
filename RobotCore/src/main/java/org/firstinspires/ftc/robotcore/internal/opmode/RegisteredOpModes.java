@@ -54,7 +54,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * {@link RegisteredOpModes} is the owner of a set of currently-registered OpModes.
+ * {@link RegisteredOpModes} is the owner of a set of currently-registered org.firstinspires.ftc.teamcode.OpModes.
  */
 @SuppressWarnings("WeakerAccess")
 public class RegisteredOpModes implements OpModeManager
@@ -408,7 +408,7 @@ public class RegisteredOpModes implements OpModeManager
     /**
      * Registers an OpMode <em>instance</em> with the name by which it should be known in the driver station.
      * This should only be used in environments where it is not possible to pass Class objects. In particular, it
-     * should not be used with OpModes authored (in Java) using Android Studio.
+     * should not be used with org.firstinspires.ftc.teamcode.OpModes authored (in Java) using Android Studio.
      *
      * @param name   the name of the OpMode in the driver station
      * @param opMode the OpMode instance to use when that OpMode is selected

@@ -56,7 +56,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * <p>A HardwareMap also contains an associated application context in which it was instantiated.
  * Through their {@link com.qualcomm.robotcore.eventloop.opmode.OpMode#hardwareMap hardwareMap}, this
- * provides access to a {@link Context} for OpModes, as such an appropriate instance is needed
+ * provides access to a {@link Context} for org.firstinspires.ftc.teamcode.OpModes, as such an appropriate instance is needed
  * by various system APIs.</p>
  */
 @SuppressWarnings("WeakerAccess")

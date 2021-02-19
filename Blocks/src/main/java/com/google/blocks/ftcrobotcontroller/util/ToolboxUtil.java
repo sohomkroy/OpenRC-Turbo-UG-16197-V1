@@ -26,7 +26,7 @@ import java.util.Map;
  * @author lizlooney@google.com (Liz Looney)
  */
 public class ToolboxUtil {
-  // Prevent instantiation of util class.
+  // Prevent instantiation of org.firstinspires.ftc.teamcode.drive.util class.
   private ToolboxUtil() {
   }
 

@@ -378,7 +378,7 @@ public interface Telemetry
     //----------------------------------------------------------------------------------------------
 
     /**
-     * Instances of {@link Item} represent an item of data on the drive station telemetry display.
+     * Instances of {@link Item} represent an item of data on the org.firstinspires.ftc.teamcode.drive station telemetry display.
      *
      * @see {@link #addData(String, Object)}
      */

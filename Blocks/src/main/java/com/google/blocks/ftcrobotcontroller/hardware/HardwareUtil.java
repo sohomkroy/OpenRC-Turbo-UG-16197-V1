@@ -133,7 +133,7 @@ public class HardwareUtil {
     }
   }
 
-  // Prevent instantiation of util class.
+  // Prevent instantiation of org.firstinspires.ftc.teamcode.drive.util class.
   private HardwareUtil() {
   }
 
@@ -2150,12 +2150,12 @@ public class HardwareUtil {
     set.add("TouchSensor");
     set.add("UltrasonicSensor");
     set.add("VoltageSensor");
-    // com.qualcomm.robotcore.util
+    // com.qualcomm.robotcore.org.firstinspires.ftc.teamcode.drive.util
     set.add("ElapsedTime");
     set.add("Range");
     set.add("ReadWriteFile");
     set.add("RobotLog");
-    // java.util
+    // java.org.firstinspires.ftc.teamcode.drive.util
     set.add("ArrayList");
     set.add("Collections");
     set.add("List");

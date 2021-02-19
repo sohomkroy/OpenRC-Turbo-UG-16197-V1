@@ -108,7 +108,7 @@ import java.util.zip.ZipEntry;
  *  <p>
  *  The Annotated OpMode loading system is a client of this structure. It monitors for successful
  *  builds, and upon detection of same, (re)scans the output of the build and alters its sense of
- *  available OpModes accordingly.
+ *  available org.firstinspires.ftc.teamcode.OpModes accordingly.
  */
 @SuppressWarnings("WeakerAccess")
 public class OnBotJavaManager implements Closeable

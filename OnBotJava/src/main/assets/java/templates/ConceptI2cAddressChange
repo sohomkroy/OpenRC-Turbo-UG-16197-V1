@@ -35,10 +35,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.I2cAddr;
-import com.qualcomm.robotcore.util.RobotLog;
-import com.qualcomm.robotcore.util.TypeConversion;
+import com.qualcomm.robotcore.org.firstinspires.ftc.teamcode.drive.util.RobotLog;
+import com.qualcomm.robotcore.org.firstinspires.ftc.teamcode.drive.util.TypeConversion;
 
-import java.util.concurrent.locks.Lock;
+import java.org.firstinspires.ftc.teamcode.drive.util.concurrent.locks.Lock;
 
 /**
  * An example of a linear op mode that shows how to change the I2C address.
