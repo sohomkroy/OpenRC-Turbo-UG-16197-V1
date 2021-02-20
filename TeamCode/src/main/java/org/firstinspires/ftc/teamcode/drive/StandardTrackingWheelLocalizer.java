@@ -39,8 +39,9 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     //14.073!!!!! this is guuds
     public static double FORWARD_OFFSET = 6.748543307; // in; offset of the lateral wheel
 
-    public static double X_MULTIPLIER = 1.0018042;
-    public static double Y_MULTIPLIER = 1.0014544;
+    public static double X_MULTIPLIER = 1.012;
+    public static double Y_MULTIPLIER = 0.985;
+    //1.0014544
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
