@@ -41,18 +41,27 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     //14.16159333
     //14.17459333
     //14.16489333
+    //14.21485436
     public static double FORWARD_OFFSET = 6.748543307; // in; offset of the lateral wheel
 
-    public static double X_MULTIPLIER = 0.99731065;
+    public static double X_MULTIPLIER = 1;
     //0.997
     // 0.978
     //1.0018042
     //0.99832557
-    public static double Y_MULTIPLIER = 0.99123747463;
+    //0.99731065
+
+    //0.99423849
+    //0.99463849
+
+    public static double Y_MULTIPLIER = 1;
     //0.972
     //0.979
     //0.980
     //0.99055874
+    //0.99123747463
+
+    //0.989035256
 
     //pid shit
     //max velo: 130 --> 90% = 117
