@@ -94,6 +94,9 @@ public class MainTele extends LinearOpMode {
         differentialMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         differentialMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        differentialMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        differentialMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         differentialMotor1.getMotorType().setAchieveableMaxRPMFraction(1.0);
         differentialMotor2.getMotorType().setAchieveableMaxRPMFraction(1.0);
 
@@ -146,12 +149,15 @@ public class MainTele extends LinearOpMode {
 
             //b forward, x is stop, a reverse
             if (gamepad1.b) {
-                    intake.intakeIn();
+                telemetry.addData("Intake", "In");
+                intake.intakeIn();
             }
             if (gamepad1.a) {
+                telemetry.addData("Intake", "Out");
                 intake.intakeOut();
             }
             if (gamepad1.x) {
+                telemetry.addData("Intake", "Stop");
                 intake.intakeStop();
             }
 
@@ -175,15 +181,26 @@ public class MainTele extends LinearOpMode {
         }
 
         if (stateClass.getTurretMovement() != StateClass.TurretMovement.STOPPED) {
+            telemetry.addData("Turret: ", "On");
             turretEncoder.setTurretAngle(drive.getTurretPosition());
             updateTurretTargetAngle();
             turret.setTurretTargetPosition(targetAngle);
+            turret.updateTurret();
+        }
+        else {
+            telemetry.addData("Turret: ", "Off");
             turret.updateTurret();
         }
 
         if (differential.wasChanged()) {
             differentialMotor1.setPower(differential.getMotor1Power());
             differentialMotor2.setPower(differential.getMotor2Power());
+            telemetry.addData("Diffy 1: ", differential.getMotor1Power());
+            telemetry.addData("Diffy 2: ", differential.getMotor2Power());
+            telemetry.addData("Intake Speed", differential.getIntakeSpeed());
+            telemetry.addData("Turret Speed", differential.getTurretSpeed());
+            telemetry.addData("Velo1", differentialMotor1.getVelocity());
+            telemetry.addData("Velo2", differentialMotor2.getVelocity());
         }
     }
 

@@ -4,8 +4,8 @@ public class Intake {
     StateClass stateClass;
     Differential differential;
 
-    private double intakeSpeed = .6;
-    private double outtakeSpeed = -.2;
+    private double intakeSpeed = -.4;
+    private double outtakeSpeed = .4;
 
     public Intake(StateClass stateClass, Differential differential) {
         this.stateClass = stateClass;

@@ -51,13 +51,14 @@ public class Differential {
     private double changedThreshold = .05;
 
     public boolean wasChanged() {
-        if (Math.abs(motor1Power-motor1PowerPrev) > changedThreshold || Math.abs(motor2Power-motor2PowerPrev) > changedThreshold) {
-            changed = true;
-        }
-        else {
-            changed = false;
-        }
-        return changed;
+        return true;
+//        if (Math.abs(motor1Power-motor1PowerPrev) > changedThreshold || Math.abs(motor2Power-motor2PowerPrev) > changedThreshold) {
+//            changed = true;
+//        }
+//        else {
+//            changed = false;
+//        }
+//        return changed;
     }
 
     public double getMotor1Power() {
@@ -66,5 +67,13 @@ public class Differential {
 
     public double getMotor2Power() {
         return motor2Power;
+    }
+
+    public double getIntakeSpeed() {
+        return intakeSpeed;
+    }
+
+    public double getTurretSpeed() {
+        return turretSpeed;
     }
 }
