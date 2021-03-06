@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 public class StateClass {
-    enum IntakeState {
+    public enum IntakeState {
         IN,
         OUT,
         STOPPED
@@ -16,14 +16,23 @@ public class StateClass {
         return intakeState;
     }
 
-    enum ServoIntakeState {
+    public enum ServoIntakeState {
         UP,
         BACK,
         DOWN,
         MOVING
     }
 
-    enum TurretMovementSpeed {
+    private ServoIntakeState servoIntakeState;
+    public void setServoIntakeState(ServoIntakeState servoIntakeState) {
+        this.servoIntakeState = servoIntakeState;
+    }
+
+    public ServoIntakeState getServoIntakeState() {
+        return servoIntakeState;
+    }
+
+    public enum TurretMovementSpeed {
         HIGHPOWER,
         LOWPOWER
     }
@@ -37,7 +46,7 @@ public class StateClass {
         return this.turretMovementSpeed;
     }
 
-    enum TurretMovement {
+    public enum TurretMovement {
         MOVING,
         STOPPED
     }
@@ -52,27 +61,39 @@ public class StateClass {
         return turretMovement;
     }
 
-    enum TurretPositionState {
+    public enum TurretPositionState {
         ONTARGET,
         OFFTARGET
     }
+
+    private TurretPositionState turretPositionState;
+
+    public void setTurretPositionState(TurretPositionState turretPositionState) {
+        this.turretPositionState = turretPositionState;
+    }
+
+    public TurretPositionState getTurretPositionState() {
+        return turretPositionState;
+    }
+
+
 
     enum ServoRaiserState {
         UP,
         DOWN,
         MOVING
     }
-    enum ShooterServoState {
+    public enum ShooterServoState {
         IN,
         OUT,
         MOVING
     }
-    enum ShooterState {
+    public enum ShooterState {
         ATSPEED,
         WINDINGUP,
         STOPPED
     }
-    enum AngleAdjustState {
+    public enum AngleAdjustState {
         ONTARGET,
         MOVING,
         STOPPED

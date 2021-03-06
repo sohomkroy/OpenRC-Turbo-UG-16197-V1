@@ -29,8 +29,8 @@ public class Turret {
     }
 
     public void setTurretTargetPosition(double angle) {
-        turretTargetPosition = angle;
-        controller.setTargetPosition(angle);
+        this.turretTargetPosition = angle;
+        controller.setTargetPosition(turretTargetPosition);
     }
 
     public void setTurretSlowMode() {
@@ -59,5 +59,17 @@ public class Turret {
                 differential.setTurretSpeed(0);
                 break;
         }
+        onTargetCheck();
+    }
+
+    private double turretThreshold = 2;
+    private boolean onTarget;
+
+    public boolean onTarget() {
+        return onTarget;
+    }
+    private void onTargetCheck() {
+        onTarget = Math.abs(controller.getLastError()) < turretThreshold;
+
     }
 }

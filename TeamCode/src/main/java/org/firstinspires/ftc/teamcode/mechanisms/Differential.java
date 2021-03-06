@@ -4,6 +4,9 @@ public class Differential {
     private double motor1Power;
     private double motor2Power;
 
+    private double motor1PowerPrev;
+    private double motor2PowerPrev;
+
     private double intakeSpeed;
     private double turretSpeed;
 
@@ -18,12 +21,18 @@ public class Differential {
         }
        else {
             if (Math.abs(speed)+Math.abs(turretSpeed) > 1.8) {
-
+                //throw error / warning
             }
             this.intakeSpeed = speed;
-            motor1Power = (intakeSpeed+turretSpeed)/2.0;
-            motor2Power = (intakeSpeed-turretSpeed)/2.0;
+            updateSpeeds();
         }
+    }
+
+    private void updateSpeeds() {
+        motor1PowerPrev = motor1Power;
+        motor2PowerPrev = motor2Power;
+        motor1Power = (intakeSpeed+turretSpeed)/2.0;
+        motor2Power = (intakeSpeed-turretSpeed)/2.0;
     }
 
     public void setTurretSpeed(double speed) {
@@ -35,9 +44,20 @@ public class Differential {
 
             }
             this.turretSpeed = speed;
-            motor1Power = (intakeSpeed+turretSpeed)/2.0;
-            motor2Power = (intakeSpeed-turretSpeed)/2.0;
+            updateSpeeds();
         }
+    }
+    private boolean changed;
+    private double changedThreshold = .05;
+
+    public boolean wasChanged() {
+        if (Math.abs(motor1Power-motor1PowerPrev) > changedThreshold || Math.abs(motor2Power-motor2PowerPrev) > changedThreshold) {
+            changed = true;
+        }
+        else {
+            changed = false;
+        }
+        return changed;
     }
 
     public double getMotor1Power() {

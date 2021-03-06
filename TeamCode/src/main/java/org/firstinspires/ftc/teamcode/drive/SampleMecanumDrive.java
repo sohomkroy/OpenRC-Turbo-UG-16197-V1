@@ -398,4 +398,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         return 0;
         //return imu.getAngularOrientation().firstAngle;
     }
+
+    public double getTurretPosition() {
+        return rightRear.getCurrentPosition();
+    }
 }
