@@ -80,16 +80,39 @@ public class StateClass {
 
 
 
-    enum ServoRaiserState {
+    public enum ServoRaiserState {
         UP,
         DOWN,
-        MOVING
+        MOVING_UP,
+        MOVING_DOWN
     }
+    private static ServoRaiserState servoRaiserState;
+
+    public static void setServoRaiserState(ServoRaiserState servoRaiserState) {
+        StateClass.servoRaiserState = servoRaiserState;
+    }
+
+    public static ServoRaiserState getServoRaiserState() {
+        return servoRaiserState;
+    }
+
     public enum ShooterServoState {
         IN,
         OUT,
-        MOVING
+        MOVING_IN,
+        MOVING_OUT
     }
+
+    private static ShooterServoState shooterServoState;
+
+    public static void setShooterServoState(ShooterServoState shooterServoState) {
+        StateClass.shooterServoState = shooterServoState;
+    }
+
+    public static ShooterServoState getShooterServoState() {
+        return shooterServoState;
+    }
+
     public enum ShooterState {
         ATSPEED,
         WINDINGUP,
