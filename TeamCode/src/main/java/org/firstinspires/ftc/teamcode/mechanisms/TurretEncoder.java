@@ -9,7 +9,7 @@ public class TurretEncoder {
     }
 
     public void setTurretAngle(double encoderTicks) {
-        this.turretAngle = initialAngle + encoderTicks/8192*360;
+        this.turretAngle = initialAngle + encoderTicks/8192*28/119*360;
     }
     public void setInitialAngle(double initialAngle) {
         this.initialAngle = initialAngle;

@@ -4,7 +4,6 @@ import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 
 public class Turret {
-    private StateClass stateClass;
     private Differential differential;
     private TurretEncoder turretEncoder;
 
@@ -19,10 +18,12 @@ public class Turret {
     private PIDCoefficients turretPIDCoefficients = new PIDCoefficients(kP, kI, kD);
     private PIDFController controller = new PIDFController(turretPIDCoefficients);
 
+    public void defaultStateReset(){
+        StateClass.setTurretMovement(StateClass.TurretMovement.STOPPED);
+        StateClass.setTurretMovementSpeed(StateClass.TurretMovementSpeed.LOWPOWER);
+    }
 
-    public Turret(StateClass stateClass, Differential differential, TurretEncoder turretEncoder) {
-        this.stateClass = stateClass;
-        this.stateClass.setTurretMovement(StateClass.TurretMovement.STOPPED);
+    public Turret(Differential differential, TurretEncoder turretEncoder) {
         this.differential = differential;
         this.turretEncoder = turretEncoder;
         controller.setOutputBounds(-turretSlowSpeed, turretSlowSpeed);
@@ -34,24 +35,24 @@ public class Turret {
     }
 
     public void setTurretSlowMode() {
-        stateClass.setTurretMovementSpeed(StateClass.TurretMovementSpeed.LOWPOWER);
+        StateClass.setTurretMovementSpeed(StateClass.TurretMovementSpeed.LOWPOWER);
         controller.setOutputBounds(-turretSlowSpeed, turretSlowSpeed);
     }
 
     public void setTurretFastMode() {
-        stateClass.setTurretMovementSpeed(StateClass.TurretMovementSpeed.HIGHPOWER);
+        StateClass.setTurretMovementSpeed(StateClass.TurretMovementSpeed.HIGHPOWER);
         controller.setOutputBounds(-turretFastSpeed, turretFastSpeed);
     }
 
     public void startTurret() {
-        this.stateClass.setTurretMovement(StateClass.TurretMovement.MOVING);
+        StateClass.setTurretMovement(StateClass.TurretMovement.MOVING);
     }
     public void stopTurret() {
-        this.stateClass.setTurretMovement(StateClass.TurretMovement.STOPPED);
+        StateClass.setTurretMovement(StateClass.TurretMovement.STOPPED);
     }
 
     public void updateTurret() {
-        switch (stateClass.getTurretMovement()) {
+        switch (StateClass.getTurretMovement()) {
             case MOVING:
                 differential.setTurretSpeed(controller.update(turretEncoder.getTurretAngle()));
                 break;

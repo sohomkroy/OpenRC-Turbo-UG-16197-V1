@@ -63,18 +63,21 @@ public class MainTele extends LinearOpMode {
     //State Class
     StateClass stateClass = new StateClass();
     //Mechanism Classes
-    ServoIntake servoIntake = new ServoIntake(stateClass);
+    ServoIntake servoIntake = new ServoIntake();
     Differential differential = new Differential();
-    Intake intake = new Intake(stateClass, differential);
+    Intake intake = new Intake(differential);
 
     TurretEncoder turretEncoder = new TurretEncoder();
-    Turret turret = new Turret(stateClass, differential, turretEncoder);
+    Turret turret = new Turret(differential, turretEncoder);
 
     private double targetAngle;
     private Pose2d myPose;
     private boolean targetingMode = false;
 
     SampleMecanumDrive drive;
+
+    public boolean withAuto = true;
+
 
     @Override
     public void runOpMode() {
@@ -89,7 +92,7 @@ public class MainTele extends LinearOpMode {
         differentialMotor2 = hardwareMap.get(DcMotorEx.class, "right_differential_drive");
 
         differentialMotor1.setDirection(DcMotor.Direction.FORWARD);
-        differentialMotor2.setDirection(DcMotor.Direction.REVERSE);
+        differentialMotor2.setDirection(DcMotor.Direction.FORWARD);
 
         differentialMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         differentialMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -112,7 +115,15 @@ public class MainTele extends LinearOpMode {
 
 
         waitForStart();
+
+        if (!withAuto) {
+            turret.defaultStateReset();
+            intake.defaultStateReset();
+            servoIntake.defaultStateReset();
+        }
+
         runtime.reset();
+        servoIntake.servoBack();
 
         while (opModeIsActive()) {
             for (LynxModule module : allHubs) {
@@ -120,51 +131,48 @@ public class MainTele extends LinearOpMode {
             }
 
             drive.update();
-            drive.setWeightedDrivePower(
-                    new Pose2d(
-                            -gamepad1.left_stick_y,
-                            -gamepad1.left_stick_x*1.1,
-                            -gamepad1.right_stick_x
-                    )
-            );
+//            drive.setWeightedDrivePower(
+//                    new Pose2d(
+//                            -gamepad1.left_stick_y,
+//                            -gamepad1.left_stick_x*1.1,
+//                            -gamepad1.right_stick_x
+//                    )
+//            );
 
             if (gamepad2.dpad_down) {
-                if (stateClass.getTurretMovement() == StateClass.TurretMovement.STOPPED) {
-                    telemetry.addData("Turret", "Turret Started");
+                if (StateClass.getTurretMovement() == StateClass.TurretMovement.STOPPED) {
                     turret.startTurret();
                 }
                 else {
-                    telemetry.addData("Turret", "Turret Stopped");
                     turret.stopTurret();
                 }
             }
             if (gamepad2.dpad_left) {
                 turret.setTurretSlowMode();
-                telemetry.addData("TurretSpeed", "Turret SlowMode");
             }
             if (gamepad2.dpad_right) {
                 turret.setTurretFastMode();
-                telemetry.addData("TurretSpeed", "Turret FastMode");
             }
 
-            //b forward, x is stop, a reverse
             if (gamepad1.b) {
-                telemetry.addData("Intake", "In");
                 intake.intakeIn();
             }
             if (gamepad1.a) {
-                telemetry.addData("Intake", "Out");
                 intake.intakeOut();
             }
             if (gamepad1.x) {
-                telemetry.addData("Intake", "Stop");
+
                 intake.intakeStop();
             }
 
 
-            myPose = drive.getPoseEstimate();
-            updateMechanisms();
 
+            myPose = drive.getPoseEstimate();
+
+
+            updateMechanisms();
+            reportTurretTelemetry();
+            reportIntakeTelemetry();
             telemetry.addData("x", myPose.getX());
             telemetry.addData("y", myPose.getY());
             telemetry.addData("heading", myPose.getHeading());
@@ -179,28 +187,34 @@ public class MainTele extends LinearOpMode {
         if (servoIntake.wasChanged()) {
             intakeServo.setPosition(servoIntake.getServoPosition());
         }
+        servoIntake.checkServoTimer();
 
-        if (stateClass.getTurretMovement() != StateClass.TurretMovement.STOPPED) {
-            telemetry.addData("Turret: ", "On");
-            turretEncoder.setTurretAngle(drive.getTurretPosition());
-            updateTurretTargetAngle();
-            turret.setTurretTargetPosition(targetAngle);
-            turret.updateTurret();
-        }
-        else {
-            telemetry.addData("Turret: ", "Off");
-            turret.updateTurret();
-        }
+        turretEncoder.setTurretAngle(drive.getTurretEncoderPosition());
+        updateTurretTargetAngle();
+        turret.setTurretTargetPosition(targetAngle);
+        turret.updateTurret();
+
+//        if (stateClass.getTurretMovement() == StateClass.TurretMovement.MOVING) {
+//            turretEncoder.setTurretAngle(drive.getTurretEncoderPosition());
+//            updateTurretTargetAngle();
+//            turret.setTurretTargetPosition(targetAngle);
+//            turret.updateTurret();
+//        }
+//        else {
+//            turret.updateTurret();
+//            //probably remove this later
+//            turretEncoder.setTurretAngle(drive.getTurretEncoderPosition());
+//        }
 
         if (differential.wasChanged()) {
             differentialMotor1.setPower(differential.getMotor1Power());
             differentialMotor2.setPower(differential.getMotor2Power());
-            telemetry.addData("Diffy 1: ", differential.getMotor1Power());
-            telemetry.addData("Diffy 2: ", differential.getMotor2Power());
-            telemetry.addData("Intake Speed", differential.getIntakeSpeed());
-            telemetry.addData("Turret Speed", differential.getTurretSpeed());
-            telemetry.addData("Velo1", differentialMotor1.getVelocity());
-            telemetry.addData("Velo2", differentialMotor2.getVelocity());
+            //telemetry.addData("Diffy 1: ", differential.getMotor1Power());
+            //telemetry.addData("Diffy 2: ", differential.getMotor2Power());
+            //telemetry.addData("Intake Speed", differential.getIntakeSpeed());
+            //telemetry.addData("Turret Speed", differential.getTurretSpeed());
+            //telemetry.addData("Velo1", differentialMotor1.getVelocity());
+            //telemetry.addData("Velo2", differentialMotor2.getVelocity());
         }
     }
 
@@ -226,11 +240,47 @@ public class MainTele extends LinearOpMode {
             }
         }
         else {
-            targetAngle+=-1*gamepad2.left_stick_y;
-            targetAngle = 10*Range.clip(targetAngle, turretLowerAngleBound, turretUpperAngleBound);
+            targetAngle+=-.01*gamepad2.left_stick_y;
+            targetAngle = Range.clip(targetAngle, turretLowerAngleBound, turretUpperAngleBound);
         }
-        telemetry.addData("Turret Target Angle: ", targetAngle);
-        telemetry.addData("Turret Targeted: ", turret.onTarget());
+
+        telemetry.addData("Turret Target Angle", targetAngle);
+        telemetry.addData("Turret Targeted", turret.onTarget());
+
+    }
+    public void reportIntakeTelemetry() {
+        switch (StateClass.getIntakeState()) {
+            case STOPPED:
+                telemetry.addData("Intake", "Stop");
+                break;
+            case IN:
+                telemetry.addData("Intake", "IN");
+                break;
+            case OUT:
+                telemetry.addData("Intake", "OUT");
+                break;
+        }
+
+    }
+    public void reportTurretTelemetry() {
+        switch (StateClass.getTurretMovement()) {
+            case STOPPED:
+                telemetry.addData("Turret:", "Stopped");
+                break;
+            case MOVING:
+                telemetry.addData("Turret:", "Moving");
+                break;
+        }
+        switch (StateClass.getTurretMovementSpeed()) {
+            case HIGHPOWER:
+                telemetry.addData("Turret Speed", "High Power");
+                break;
+            case LOWPOWER:
+                telemetry.addData("Turret Speed", "Low Power");
+                break;
+        }
+        telemetry.addData("Turret Angle", turretEncoder.getTurretAngle());
+        telemetry.addData("Turret Target Angle", targetAngle);
 
     }
 }

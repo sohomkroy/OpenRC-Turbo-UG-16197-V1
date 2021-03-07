@@ -75,8 +75,8 @@ public class BasicTestMode extends LinearOpMode {
         leftDrive.setDirection(DcMotorEx.Direction.FORWARD);
         rightDrive.setDirection(DcMotorEx.Direction.FORWARD);
 
-        leftDrive.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        leftDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         leftDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);

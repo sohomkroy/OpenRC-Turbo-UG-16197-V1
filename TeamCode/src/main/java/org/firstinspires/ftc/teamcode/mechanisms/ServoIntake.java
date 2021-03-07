@@ -1,48 +1,71 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
-public class ServoIntake {
-    private StateClass stateClass;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-    private double servoUpPosition = .6;
-    private double servoDownPosition = .4;
-    private double servoBackPosition = .2;
+public class ServoIntake {
+    private final double  servoUpPosition = .6;
+    private final double servoDownPosition = .4;
+    private final double servoBackPosition = .2;
 
     private double servoPosition;
 
-    public ServoIntake(StateClass stateClass) {
-        this.stateClass = stateClass;
+    private final double timeUpToDown = 200;
+    private final double timeDownToBack = 200;
+    private final double timeBackToUp = 200;
+    private CountDownTimer countDownTimer = new CountDownTimer();
+
+    public void defaultStateReset() {
+        StateClass.setIntakeState(StateClass.IntakeState.STOPPED);
+    }
+
+    public ServoIntake() {
     }
 
     public void servoUp() {
-        if (stateClass.getServoIntakeState() != StateClass.ServoIntakeState.UP) {
+        if (StateClass.getServoIntakeState() == StateClass.ServoIntakeState.DOWN || StateClass.getServoIntakeState() == StateClass.ServoIntakeState.MOVING_DOWN) {
+            countDownTimer.setTime(timeUpToDown);
+            changed = true;
+        }
+        else if (StateClass.getServoIntakeState() == StateClass.ServoIntakeState.BACK || StateClass.getServoIntakeState() == StateClass.ServoIntakeState.MOVING_BACK) {
+            countDownTimer.setTime(timeBackToUp);
             changed = true;
         }
         else {
             changed = false;
         }
-        stateClass.setServoIntakeState(StateClass.ServoIntakeState.UP);
+        StateClass.setServoIntakeState(StateClass.ServoIntakeState.MOVING_UP);
         servoPosition = servoUpPosition;
     }
 
     public void servoDown() {
-        if (stateClass.getServoIntakeState() != StateClass.ServoIntakeState.DOWN) {
+        if (StateClass.getServoIntakeState() == StateClass.ServoIntakeState.BACK || StateClass.getServoIntakeState() == StateClass.ServoIntakeState.MOVING_BACK) {
+            countDownTimer.setTime(timeDownToBack);
+            changed = true;
+        }
+        else if (StateClass.getServoIntakeState() == StateClass.ServoIntakeState.UP || StateClass.getServoIntakeState() == StateClass.ServoIntakeState.MOVING_UP) {
+            countDownTimer.setTime(timeUpToDown);
             changed = true;
         }
         else {
             changed = false;
         }
-        stateClass.setServoIntakeState(StateClass.ServoIntakeState.DOWN);
+        StateClass.setServoIntakeState(StateClass.ServoIntakeState.MOVING_DOWN);
         servoPosition = servoDownPosition;
     }
 
     public void servoBack() {
-        if (stateClass.getServoIntakeState() != StateClass.ServoIntakeState.BACK) {
+        if (StateClass.getServoIntakeState() == StateClass.ServoIntakeState.DOWN || StateClass.getServoIntakeState() == StateClass.ServoIntakeState.MOVING_DOWN) {
+            countDownTimer.setTime(timeDownToBack);
+            changed = true;
+        }
+        if (StateClass.getServoIntakeState() == StateClass.ServoIntakeState.UP || StateClass.getServoIntakeState() == StateClass.ServoIntakeState.MOVING_UP) {
+            countDownTimer.setTime(timeBackToUp);
             changed = true;
         }
         else {
             changed = false;
         }
-        stateClass.setServoIntakeState(StateClass.ServoIntakeState.BACK);
+        StateClass.setServoIntakeState(StateClass.ServoIntakeState.MOVING_BACK);
         servoPosition = servoBackPosition;
     }
 
@@ -56,5 +79,20 @@ public class ServoIntake {
         return changed;
     }
 
+    public void checkServoTimer() {
+        if (countDownTimer.timeElapsed()) {
+            switch (StateClass.getServoIntakeState()) {
+                case MOVING_BACK:
+                    StateClass.setServoIntakeState(StateClass.ServoIntakeState.BACK);
+                    break;
+                case MOVING_UP:
+                    StateClass.setServoIntakeState(StateClass.ServoIntakeState.UP);
+                    break;
+                case MOVING_DOWN:
+                    StateClass.setServoIntakeState(StateClass.ServoIntakeState.DOWN);
+                    break;
+            }
+        }
+    }
 
 }

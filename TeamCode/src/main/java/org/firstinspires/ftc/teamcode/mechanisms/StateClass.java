@@ -7,12 +7,12 @@ public class StateClass {
         STOPPED
     }
 
-    private IntakeState intakeState;
-    public void setIntakeState(IntakeState intakeState) {
-        this.intakeState = intakeState;
+    private static IntakeState intakeState;
+    public static void setIntakeState(IntakeState intakeState) {
+        StateClass.intakeState = intakeState;
     }
 
-    public IntakeState getIntakeState() {
+    public static IntakeState getIntakeState() {
         return intakeState;
     }
 
@@ -20,15 +20,17 @@ public class StateClass {
         UP,
         BACK,
         DOWN,
-        MOVING
+        MOVING_UP,
+        MOVING_DOWN,
+        MOVING_BACK,
     }
 
-    private ServoIntakeState servoIntakeState;
-    public void setServoIntakeState(ServoIntakeState servoIntakeState) {
-        this.servoIntakeState = servoIntakeState;
+    private static ServoIntakeState servoIntakeState;
+    public static void setServoIntakeState(ServoIntakeState servoIntakeState) {
+        StateClass.servoIntakeState = servoIntakeState;
     }
 
-    public ServoIntakeState getServoIntakeState() {
+    public static ServoIntakeState getServoIntakeState() {
         return servoIntakeState;
     }
 
@@ -37,13 +39,13 @@ public class StateClass {
         LOWPOWER
     }
 
-    private TurretMovementSpeed turretMovementSpeed;
-    public void setTurretMovementSpeed(TurretMovementSpeed turretMovementSpeed) {
-        this.turretMovementSpeed = turretMovementSpeed;
+    private static TurretMovementSpeed turretMovementSpeed;
+    public static void setTurretMovementSpeed(TurretMovementSpeed turretMovementSpeed) {
+        StateClass.turretMovementSpeed = turretMovementSpeed;
     }
 
-    public TurretMovementSpeed getTurretMovementSpeed() {
-        return this.turretMovementSpeed;
+    public static TurretMovementSpeed getTurretMovementSpeed() {
+        return StateClass.turretMovementSpeed;
     }
 
     public enum TurretMovement {
@@ -51,13 +53,13 @@ public class StateClass {
         STOPPED
     }
 
-    private TurretMovement turretMovement;
+    private static TurretMovement turretMovement;
 
-    public void setTurretMovement(TurretMovement turretMovement) {
-        this.turretMovement = turretMovement;
+    public static void setTurretMovement(TurretMovement turretMovement) {
+        StateClass.turretMovement = turretMovement;
     }
 
-    public TurretMovement getTurretMovement() {
+    public static TurretMovement getTurretMovement() {
         return turretMovement;
     }
 
@@ -66,13 +68,13 @@ public class StateClass {
         OFFTARGET
     }
 
-    private TurretPositionState turretPositionState;
+    private static TurretPositionState turretPositionState;
 
-    public void setTurretPositionState(TurretPositionState turretPositionState) {
-        this.turretPositionState = turretPositionState;
+    public static void setTurretPositionState(TurretPositionState turretPositionState) {
+        StateClass.turretPositionState = turretPositionState;
     }
 
-    public TurretPositionState getTurretPositionState() {
+    public static TurretPositionState getTurretPositionState() {
         return turretPositionState;
     }
 
