@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.profile.MotionProfile;
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
 import com.acmerobotics.roadrunner.util.NanoClock;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -44,7 +45,7 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
 @Config
 @Autonomous(group = "org/firstinspires/ftc/teamcode/drive")
 public class ManualFeedforwardTuner extends LinearOpMode {
-    public static double DISTANCE = 72; // in
+    public static double DISTANCE = 60; // in
 
     private FtcDashboard dashboard = FtcDashboard.getInstance();
 
@@ -68,6 +69,10 @@ public class ManualFeedforwardTuner extends LinearOpMode {
         if (RUN_USING_ENCODER) {
             RobotLog.setGlobalErrorMsg("Feedforward constants usually don't need to be tuned " +
                     "when using the built-in org.firstinspires.ftc.teamcode.drive motor velocity PID.");
+        }
+
+        for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
 
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
@@ -142,6 +147,9 @@ public class ManualFeedforwardTuner extends LinearOpMode {
                     break;
             }
 
+            for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
+                module.clearBulkCache();
+            }
             telemetry.update();
         }
     }
