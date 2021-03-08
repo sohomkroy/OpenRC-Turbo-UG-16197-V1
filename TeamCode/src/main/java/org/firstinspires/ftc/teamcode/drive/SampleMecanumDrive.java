@@ -402,4 +402,13 @@ public class SampleMecanumDrive extends MecanumDrive {
     public double getTurretEncoderPosition() {
         return rightRear.getCurrentPosition();
     }
+    public double counter = 0;
+    public ArrayList<Double> getRawWheelPositions() {
+        counter+=1;
+        ArrayList<Double> positions = new ArrayList<>();
+        positions.add((double) leftRear.getCurrentPosition());
+        positions.add((double) leftFront.getCurrentPosition());
+        positions.add((double) rightFront.getCurrentPosition());
+        return positions;
+    }
 }

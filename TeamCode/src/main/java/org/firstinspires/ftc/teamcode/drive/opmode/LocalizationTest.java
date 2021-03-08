@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,8 +27,21 @@ public class LocalizationTest extends LinearOpMode {
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
+        int counter = 0;
+        List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
 
+
+        List<Double> wheelPosition = drive.getWheelPositions();
+
+        double initialLeft = wheelPosition.get(0);
+        double initialRight = wheelPosition.get(1);
+        double initialFront = wheelPosition.get(3);
+
+        for (LynxModule module : allHubs) {
+            module.clearBulkCache();
+        }
         while (!isStopRequested()) {
+            counter+=1;
             drive.setWeightedDrivePower(
                     new Pose2d(
                             -gamepad1.left_stick_y,
@@ -38,15 +53,21 @@ public class LocalizationTest extends LinearOpMode {
             drive.update();
 
             Pose2d poseEstimate = drive.getPoseEstimate();
-            List<Double> wheelPosition = drive.getWheelPositions();
-            telemetry.addData("Left Wheel", wheelPosition.get(0));
-            telemetry.addData("Right Wheel", wheelPosition.get(1));
-            telemetry.addData("Front Wheel", wheelPosition.get(2));
+            wheelPosition = drive.getWheelPositions();
+            telemetry.addData("Left Wheel", wheelPosition.get(0)-initialLeft);
+            telemetry.addData("Right Wheel", wheelPosition.get(1)-initialRight);
+            telemetry.addData("Front Wheel", wheelPosition.get(3)-initialFront);
 
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.addData("counter", drive.counter);
+
             telemetry.update();
+
+            for (LynxModule module : allHubs) {
+                module.clearBulkCache();
+            }
         }
     }
 }
