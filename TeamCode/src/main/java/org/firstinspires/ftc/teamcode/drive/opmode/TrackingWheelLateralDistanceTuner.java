@@ -3,12 +3,15 @@ package org.firstinspires.ftc.teamcode.drive.opmode;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.Angle;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
+
+import java.util.List;
 
 /**
  * Opmode designed to assist the user in tuning the `StandardTrackingWheelLocalizer`'s
@@ -94,6 +97,8 @@ public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
         double lastHeading = 0;
 
         boolean tuningFinished = false;
+        List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+
 
         while (!isStopRequested() && !tuningFinished) {
             Pose2d vel = new Pose2d(0, 0, -gamepad1.right_stick_x);
@@ -116,6 +121,10 @@ public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
 
             if (gamepad1.y)
                 tuningFinished = true;
+
+            for (LynxModule module : allHubs) {
+                module.clearBulkCache();
+            }
         }
 
         telemetry.clearAll();

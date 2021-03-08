@@ -8,6 +8,8 @@ import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     public static double WHEEL_RADIUS = 2.28346/2; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 14.16489333; // in; distance between the left and right wheels
+    public static double LATERAL_DISTANCE = 14.125987; // in; distance between the left and right wheels
     //14.1938583
     //14.063
     //14.0952
@@ -42,9 +44,14 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     //14.17459333
     //14.16489333
     //14.21485436
+
+    //14.240466728514
+    //14.2650466728514
+    //14.125987
+
     public static double FORWARD_OFFSET = 6.748543307; // in; offset of the lateral wheel
 
-    public static double X_MULTIPLIER = 1;
+    public static double X_MULTIPLIER = 0.99098357608;
     //0.997
     // 0.978
     //1.0018042
@@ -54,7 +61,9 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     //0.99423849
     //0.99463849
 
-    public static double Y_MULTIPLIER = 1;
+    //0.99291979583
+    //0.99098357608
+    public static double Y_MULTIPLIER = 0.99973090283;
     //0.972
     //0.979
     //0.980
@@ -62,6 +71,8 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     //0.99123747463
 
     //0.989035256
+
+    //0.99973090283
 
     //pid shit
     //max velo: 130 --> 90% = 117
@@ -98,6 +109,8 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
                 encoderTicksToInches(frontEncoder.getCurrentPosition()*Y_MULTIPLIER)
         );
     }
+
+
 
     @NonNull
     @Override

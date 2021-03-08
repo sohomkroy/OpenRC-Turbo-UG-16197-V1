@@ -62,7 +62,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
-    public static double LATERAL_MULTIPLIER = 1;
+    public static double LATERAL_MULTIPLIER = 1.80865;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -159,7 +159,7 @@ public class SampleMecanumDrive extends MecanumDrive {
             setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
         //Changing this to coast, change float to brake
-        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
@@ -401,5 +401,14 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public double getTurretEncoderPosition() {
         return rightRear.getCurrentPosition();
+    }
+    public double counter = 0;
+    public ArrayList<Double> getRawWheelPositions() {
+        counter+=1;
+        ArrayList<Double> positions = new ArrayList<>();
+        positions.add((double) leftRear.getCurrentPosition());
+        positions.add((double) leftFront.getCurrentPosition());
+        positions.add((double) rightFront.getCurrentPosition());
+        return positions;
     }
 }
