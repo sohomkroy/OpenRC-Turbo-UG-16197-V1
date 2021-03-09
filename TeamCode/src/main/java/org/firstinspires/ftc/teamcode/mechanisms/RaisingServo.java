@@ -32,7 +32,7 @@ public class RaisingServo {
     }
 
     public void servoDown() {
-        if (StateClass.getServoRaiserState() == StateClass.ServoRaiserState.UP || StateClass.getServoRaiserState() == StateClass.getServoRaiserState().MOVING_UP) {
+        if (StateClass.getServoRaiserState() == StateClass.ServoRaiserState.UP || StateClass.getServoRaiserState() == StateClass.ServoRaiserState.MOVING_UP) {
             countDownTimer.setTime(timeDown);
             changed = true;
         }

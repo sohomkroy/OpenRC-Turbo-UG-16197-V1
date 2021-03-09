@@ -118,10 +118,15 @@ public class StateClass {
         WINDINGUP,
         STOPPED
     }
-    public enum AngleAdjustState {
-        ONTARGET,
-        MOVING,
-        STOPPED
+
+    private static ShooterState shooterState;
+
+    public static ShooterState getShooterState() {
+        return shooterState;
+    }
+
+    public static void setShooterState(ShooterState shooterState) {
+        StateClass.shooterState = shooterState;
     }
 
     public StateClass() {

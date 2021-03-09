@@ -15,8 +15,11 @@ public class Turret {
     private double kP = 0;
     private double kI = 0;
     private double kD = 0;
+    private double kS = 0;
+    private double kV = 0;
+    private double kA = 0;
     private PIDCoefficients turretPIDCoefficients = new PIDCoefficients(kP, kI, kD);
-    private PIDFController controller = new PIDFController(turretPIDCoefficients);
+    private PIDFController controller = new PIDFController(turretPIDCoefficients, kV, kA, kS);
 
     public void defaultStateReset(){
         StateClass.setTurretMovement(StateClass.TurretMovement.STOPPED);

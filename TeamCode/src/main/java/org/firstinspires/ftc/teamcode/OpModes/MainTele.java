@@ -92,7 +92,6 @@ public class MainTele extends LinearOpMode {
 
         differentialMotor1  = hardwareMap.get(DcMotorEx.class, "left_differential_drive");
         differentialMotor2 = hardwareMap.get(DcMotorEx.class, "right_differential_drive");
-
         differentialMotor1.setDirection(DcMotor.Direction.FORWARD);
         differentialMotor2.setDirection(DcMotor.Direction.FORWARD);
 
