@@ -15,6 +15,6 @@ public class AutoConstants {
     public static Vector2d targetPos = new Vector2d(54, 60);
     public static double targetHeading = 0;
     public static Vector2d parkPos = new Vector2d(12, 60);
-    public static  double parkHeading = 0;
+    public static double parkHeading = 0;
 
 }
