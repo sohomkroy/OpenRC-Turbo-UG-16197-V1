@@ -16,8 +16,8 @@ public class TestClass extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         // Declare our motors
         // Make sure your ID's match your configuration
-//        Servo testServo1 = hardwareMap.get(Servo.class, "test_servo1");
-//        Servo testServo2 = hardwareMap.get(Servo.class, "test_servo2");
+        Servo testServo1 = hardwareMap.get(Servo.class, "servo_raiser");
+        //Servo testServo2 = hardwareMap.get(Servo.class, "test_servo2");
 
 
         // Reverse the right side motors
@@ -29,13 +29,22 @@ public class TestClass extends LinearOpMode {
         if (isStopRequested()) return;
 //        double servoPosition1 = 0.5;
 //        double servoPosition2 = 0.5;
-        Encoder leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "left_rear_drive"));
-        Encoder rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "left_front_drive"));
-        Encoder frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "right_front_drive"));
+        //Encoder leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "left_rear_drive"));
+        //Encoder rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "left_front_drive"));
+        //Encoder frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "right_front_drive"));
         while (opModeIsActive()) {
-            telemetry.addData("Encoder1", leftEncoder.getCurrentPosition());
-            telemetry.addData("Encoder2", rightEncoder.getCurrentPosition());
-            telemetry.addData("Encoder3", frontEncoder.getCurrentPosition());
+            if (gamepad2.b) {
+                //raisingServo.servoUp();
+                testServo1.setPosition(1);
+                telemetry.addData("Servo Raiser", "Up");
+            }
+            if (gamepad2.a) {
+                //raisingServo.servoDown();
+                //testServo1.setPosition(0);
+                telemetry.addData("Servo Raiser", "Down");
+
+
+            }
 
             telemetry.update();
 //            double y1 = -gamepad1.left_stick_y; // Remember, this is reversed!

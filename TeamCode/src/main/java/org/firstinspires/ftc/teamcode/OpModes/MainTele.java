@@ -78,7 +78,7 @@ public class MainTele extends LinearOpMode {
 
     SampleMecanumDrive drive;
 
-    public boolean withAuto = true;
+    public boolean withAuto = false;
 
 
     @Override
@@ -171,9 +171,17 @@ public class MainTele extends LinearOpMode {
 
             if (gamepad2.b) {
                 raisingServo.servoUp();
+                //servoRaiser.setPosition(1);
+                //intakeServo.setPosition(1);
+                telemetry.addData("Servo Raiser", "Up");
             }
             if (gamepad2.a) {
                 raisingServo.servoDown();
+                //servoRaiser.setPosition(0);
+                //intakeServo.setPosition(0);
+                telemetry.addData("Servo Raiser", "Up");
+
+
             }
 
 

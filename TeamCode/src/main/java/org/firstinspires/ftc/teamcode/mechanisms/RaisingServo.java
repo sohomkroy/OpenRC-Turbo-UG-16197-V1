@@ -1,13 +1,16 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
+import com.acmerobotics.dashboard.config.Config;
+
+@Config
 public class RaisingServo {
-    private final double  servoUpPosition = .6;
-    private final double servoDownPosition = .4;
+    public static double  servoUpPosition = .6;
+    public static double servoDownPosition = .4;
 
     private double servoPosition;
 
-    private final double timeUp = 200;
-    private final double timeDown = 200;
+    public static double timeUp = 200;
+    public static double timeDown = 200;
 
     private CountDownTimer countDownTimer;
 
