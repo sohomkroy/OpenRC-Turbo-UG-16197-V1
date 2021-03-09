@@ -42,6 +42,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.Differential;
 import org.firstinspires.ftc.teamcode.mechanisms.Intake;
+import org.firstinspires.ftc.teamcode.mechanisms.RaisingServo;
 import org.firstinspires.ftc.teamcode.mechanisms.ServoIntake;
 import org.firstinspires.ftc.teamcode.mechanisms.StateClass;
 import org.firstinspires.ftc.teamcode.mechanisms.Turret;
@@ -59,13 +60,14 @@ public class MainTele extends LinearOpMode {
     private DcMotorEx differentialMotor1;
     private DcMotorEx differentialMotor2;
     private Servo intakeServo;
+    private Servo servoRaiser;
 
     //State Class
-    StateClass stateClass = new StateClass();
     //Mechanism Classes
     ServoIntake servoIntake = new ServoIntake();
     Differential differential = new Differential();
     Intake intake = new Intake(differential);
+    RaisingServo raisingServo = new RaisingServo();
 
     TurretEncoder turretEncoder = new TurretEncoder();
     Turret turret = new Turret(differential, turretEncoder);
@@ -90,7 +92,6 @@ public class MainTele extends LinearOpMode {
 
         differentialMotor1  = hardwareMap.get(DcMotorEx.class, "left_differential_drive");
         differentialMotor2 = hardwareMap.get(DcMotorEx.class, "right_differential_drive");
-
         differentialMotor1.setDirection(DcMotor.Direction.FORWARD);
         differentialMotor2.setDirection(DcMotor.Direction.FORWARD);
 
@@ -104,6 +105,7 @@ public class MainTele extends LinearOpMode {
         differentialMotor2.getMotorType().setAchieveableMaxRPMFraction(1.0);
 
         intakeServo = hardwareMap.get(Servo.class, "intake_servo");
+        servoRaiser = hardwareMap.get(Servo.class, "servo_raiser");
 
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule module : allHubs) {
@@ -120,10 +122,12 @@ public class MainTele extends LinearOpMode {
             turret.defaultStateReset();
             intake.defaultStateReset();
             servoIntake.defaultStateReset();
+            raisingServo.defaultStateReset();
         }
 
         runtime.reset();
         servoIntake.servoBack();
+        raisingServo.servoDown();
 
         while (opModeIsActive()) {
             for (LynxModule module : allHubs) {
@@ -165,6 +169,13 @@ public class MainTele extends LinearOpMode {
                 intake.intakeStop();
             }
 
+            if (gamepad2.b) {
+                raisingServo.servoUp();
+            }
+            if (gamepad2.a) {
+                raisingServo.servoDown();
+            }
+
 
 
             myPose = drive.getPoseEstimate();
@@ -188,6 +199,11 @@ public class MainTele extends LinearOpMode {
             intakeServo.setPosition(servoIntake.getServoPosition());
         }
         servoIntake.checkServoTimer();
+
+        if (raisingServo.wasChanged()) {
+            servoRaiser.setPosition(raisingServo.getServoPosition());
+        }
+        raisingServo.checkServoTimer();
 
         turretEncoder.setTurretAngle(drive.getTurretEncoderPosition());
         updateTurretTargetAngle();
@@ -281,6 +297,9 @@ public class MainTele extends LinearOpMode {
         }
         telemetry.addData("Turret Angle", turretEncoder.getTurretAngle());
         telemetry.addData("Turret Target Angle", targetAngle);
+
+    }
+    public void reportServoTelemetry() {
 
     }
 }

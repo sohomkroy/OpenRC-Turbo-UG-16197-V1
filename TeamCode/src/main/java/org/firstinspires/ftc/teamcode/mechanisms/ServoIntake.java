@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
-import com.qualcomm.robotcore.util.ElapsedTime;
-
 public class ServoIntake {
     private final double  servoUpPosition = .6;
     private final double servoDownPosition = .4;
@@ -12,13 +10,14 @@ public class ServoIntake {
     private final double timeUpToDown = 200;
     private final double timeDownToBack = 200;
     private final double timeBackToUp = 200;
-    private CountDownTimer countDownTimer = new CountDownTimer();
+    private CountDownTimer countDownTimer;
 
     public void defaultStateReset() {
-        StateClass.setIntakeState(StateClass.IntakeState.STOPPED);
+        StateClass.setServoIntakeState(StateClass.ServoIntakeState.UP);
     }
 
     public ServoIntake() {
+        countDownTimer = new CountDownTimer();
     }
 
     public void servoUp() {
