@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 public class Intake {
     Differential differential;
 
-    private double intakeSpeed = -.4;
-    private double outtakeSpeed = .4;
+    private double intakeSpeed = -1;
+    private double outtakeSpeed = 1;
 
     public void defaultStateReset() {
         StateClass.setIntakeState(StateClass.IntakeState.STOPPED);

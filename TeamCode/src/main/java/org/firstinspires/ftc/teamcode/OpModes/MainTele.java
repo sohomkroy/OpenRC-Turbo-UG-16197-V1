@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode.OpModes;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -74,19 +76,27 @@ public class MainTele extends LinearOpMode {
 
     private double targetAngle;
     private Pose2d myPose;
-    private boolean targetingMode = false;
+    private boolean targetingMode = true;
 
     SampleMecanumDrive drive;
 
     public boolean withAuto = false;
 
+    FtcDashboard dashboard;
+
+    TelemetryPacket packet;
+
+
 
     @Override
     public void runOpMode() {
         drive = new SampleMecanumDrive(hardwareMap);
+        dashboard = FtcDashboard.getInstance();
+        packet = new TelemetryPacket();
 
         //TODO create static class to store the position
-        drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(0)));
+        drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(90)));
+        setTurretEncoderInitialEncoderPosition();
         turretEncoder.setInitialAngle(90);
 
 
@@ -123,6 +133,7 @@ public class MainTele extends LinearOpMode {
             intake.defaultStateReset();
             servoIntake.defaultStateReset();
             raisingServo.defaultStateReset();
+
         }
 
         runtime.reset();
@@ -142,6 +153,8 @@ public class MainTele extends LinearOpMode {
 //                            -gamepad1.right_stick_x
 //                    )
 //            );
+            //gamepad 2 down, left, right, b, a
+            //gamepad 1b, a, x
 
             if (gamepad2.dpad_down) {
                 if (StateClass.getTurretMovement() == StateClass.TurretMovement.STOPPED) {
@@ -198,9 +211,13 @@ public class MainTele extends LinearOpMode {
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+            dashboard.sendTelemetryPacket(packet);
             telemetry.update();
 
         }
+    }
+    public void setTurretEncoderInitialEncoderPosition() {
+        turretEncoder.setInitialTicks(drive.getTurretEncoderPosition());
     }
     public void updateMechanisms() {
         if (servoIntake.wasChanged()) {
@@ -233,12 +250,12 @@ public class MainTele extends LinearOpMode {
         if (differential.wasChanged()) {
             differentialMotor1.setPower(differential.getMotor1Power());
             differentialMotor2.setPower(differential.getMotor2Power());
-            //telemetry.addData("Diffy 1: ", differential.getMotor1Power());
-            //telemetry.addData("Diffy 2: ", differential.getMotor2Power());
-            //telemetry.addData("Intake Speed", differential.getIntakeSpeed());
-            //telemetry.addData("Turret Speed", differential.getTurretSpeed());
-            //telemetry.addData("Velo1", differentialMotor1.getVelocity());
-            //telemetry.addData("Velo2", differentialMotor2.getVelocity());
+//            telemetry.addData("Diffy 1: ", differential.getMotor1Power());
+//            telemetry.addData("Diffy 2: ", differential.getMotor2Power());
+//            telemetry.addData("Intake Speed", differential.getIntakeSpeed());
+//            telemetry.addData("Turret Speed", differential.getTurretSpeed());
+//            telemetry.addData("Velo1", differentialMotor1.getVelocity());
+//            telemetry.addData("Velo2", differentialMotor2.getVelocity());
         }
     }
 
@@ -249,19 +266,23 @@ public class MainTele extends LinearOpMode {
     double uncorrectedAngle;
 
     double turretLowerAngleBound = 0;
-    double turretUpperAngleBound = 360;
+    double turretUpperAngleBound = 400;
 
     public void updateTurretTargetAngle() {
         if (targetingMode) {
-            deltaX = myPose.getX() - targetX;
-            deltaY = myPose.getY() - targetY;
-            uncorrectedAngle = Math.atan2(deltaY, deltaX) - myPose.getHeading();
-            if (uncorrectedAngle > turretUpperAngleBound) {
-                targetAngle -= 360;
-            }
-            if (uncorrectedAngle < turretLowerAngleBound) {
-                targetAngle += 360;
-            }
+//            deltaX = myPose.getX() - targetX;
+//            deltaY = myPose.getY() - targetY;
+//            uncorrectedAngle = Math.atan2(deltaY, deltaX) - myPose.getHeading();
+//            uncorrectedAngle = Math.toDegrees(uncorrectedAngle);
+
+            targetAngle = 360-Math.toDegrees(myPose.getHeading());
+
+//            if (uncorrectedAngle > turretUpperAngleBound) {
+//                targetAngle -= 360;
+//            }
+//            if (uncorrectedAngle < turretLowerAngleBound) {
+//                targetAngle += 360;
+//            }
         }
         else {
             targetAngle+=-.01*gamepad2.left_stick_y;
@@ -303,6 +324,11 @@ public class MainTele extends LinearOpMode {
                 telemetry.addData("Turret Speed", "Low Power");
                 break;
         }
+        packet.put("Turret Angle", turretEncoder.getTurretAngle());
+        packet.put("Turret Target Angle", targetAngle);
+        packet.put("PID Power", differential.getTurretSpeed());
+
+
         telemetry.addData("Turret Angle", turretEncoder.getTurretAngle());
         telemetry.addData("Turret Target Angle", targetAngle);
 
