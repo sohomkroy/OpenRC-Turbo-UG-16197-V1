@@ -108,8 +108,8 @@ public class MainTele extends LinearOpMode {
         differentialMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         differentialMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        differentialMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        differentialMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        differentialMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        differentialMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         differentialMotor1.getMotorType().setAchieveableMaxRPMFraction(1.0);
         differentialMotor2.getMotorType().setAchieveableMaxRPMFraction(1.0);
@@ -146,13 +146,13 @@ public class MainTele extends LinearOpMode {
             }
 
             drive.update();
-//            drive.setWeightedDrivePower(
-//                    new Pose2d(
-//                            -gamepad1.left_stick_y,
-//                            -gamepad1.left_stick_x*1.1,
-//                            -gamepad1.right_stick_x
-//                    )
-//            );
+            drive.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x*1.1,
+                            -gamepad1.right_stick_x
+                    )
+            );
             //gamepad 2 down, left, right, b, a
             //gamepad 1b, a, x
 

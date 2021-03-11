@@ -16,9 +16,9 @@ public class Turret {
 
     private double turretTargetPosition;
 
-    public static double kP = .002;
+    public static double kP = .05;
     public static double kI = 0;
-    public static double kD = 0;
+    public static double kD = 0.001;
     public static double kS = .005;
     public static double kV = 0;
     public static double kA = 0;
