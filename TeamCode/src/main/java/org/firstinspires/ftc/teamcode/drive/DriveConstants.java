@@ -46,7 +46,7 @@ public class DriveConstants {
     public static double WHEEL_RADIUS = 3.77953 / 2; // in
     //3.77953
     public static double GEAR_RATIO = 40.0/34.0; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 14.32; // in
+    public static double TRACK_WIDTH = 14.329; // in
     //14.32 for turn test, but 15.353 for track width tuner
 
     /*
