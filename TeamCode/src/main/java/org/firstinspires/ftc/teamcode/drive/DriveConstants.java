@@ -46,7 +46,7 @@ public class DriveConstants {
     public static double WHEEL_RADIUS = 3.77953 / 2; // in
     //3.77953
     public static double GEAR_RATIO = 40.0/34.0; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 14.329; // in
+    public static double TRACK_WIDTH = 15.785; // in
     //14.32 for turn test, but 15.353 for track width tuner
 
     /*
@@ -55,7 +55,7 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 0.01275;
+    public static double kV = 0.0126;
     public static double kA = 0.00275;
     public static double kStatic = 0.09693;
 
@@ -66,10 +66,10 @@ public class DriveConstants {
      * small and gradually increase them later after everything is working. All distance units are
      * inches.
      */
-    public static double MAX_VEL = 30;
+    public static double MAX_VEL = 50;
     public static double MAX_ACCEL = 30;
-    public static double MAX_ANG_VEL = 85;
-    public static double MAX_ANG_ACCEL = Math.toRadians(60);
+    public static double MAX_ANG_VEL = 270;
+    public static double MAX_ANG_ACCEL = 18;
 
 
     public static double encoderTicksToInches(double ticks) {
