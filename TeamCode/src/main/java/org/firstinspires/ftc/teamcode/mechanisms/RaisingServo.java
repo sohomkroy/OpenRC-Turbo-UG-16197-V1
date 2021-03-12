@@ -4,8 +4,8 @@ import com.acmerobotics.dashboard.config.Config;
 
 @Config
 public class RaisingServo {
-    public static double  servoUpPosition = .28;
-    public static double servoDownPosition = .53;
+    public static double  servoUpPosition = .3;
+    public static double servoDownPosition = .08;
 
     private double servoPosition;
 
