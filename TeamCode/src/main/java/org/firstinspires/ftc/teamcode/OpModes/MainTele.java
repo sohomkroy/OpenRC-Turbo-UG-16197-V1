@@ -31,6 +31,8 @@ package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -85,7 +87,8 @@ public class MainTele extends LinearOpMode {
     FtcDashboard dashboard;
 
     TelemetryPacket packet;
-
+    PIDFController differentialMotor1Controller;
+    PIDFController differentialMotor2Controller;
 
 
     @Override
@@ -105,8 +108,20 @@ public class MainTele extends LinearOpMode {
         differentialMotor1.setDirection(DcMotor.Direction.FORWARD);
         differentialMotor2.setDirection(DcMotor.Direction.FORWARD);
 
-        differentialMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        differentialMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        double kI = differentialMotor1.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER).i;
+        double kP = differentialMotor1.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER).i;
+        double kD = differentialMotor1.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER).i;
+        PIDCoefficients coeffs = new PIDCoefficients(kP, kI, kD);
+// create the controller
+        differentialMotor1Controller = new PIDFController(coeffs);
+        differentialMotor2Controller = new PIDFController(coeffs);
+
+        differentialMotor1Controller.setOutputBounds(-1, 1);
+        differentialMotor2Controller.setOutputBounds(-1, 1);
+
+
+        differentialMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        differentialMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         differentialMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         differentialMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -248,8 +263,13 @@ public class MainTele extends LinearOpMode {
 //        }
 
         if (differential.wasChanged()) {
-            differentialMotor1.setPower(differential.getMotor1Power());
-            differentialMotor2.setPower(differential.getMotor2Power());
+
+            differentialMotor1Controller.setTargetPosition(differentialMotor1.getMotorType().getAchieveableMaxTicksPerSecond() * differential.getMotor1Power());
+            differentialMotor1.setPower(differentialMotor1Controller.update(differentialMotor1.getVelocity()));
+
+            differentialMotor2Controller.setTargetPosition(differentialMotor2.getMotorType().getAchieveableMaxTicksPerSecond() * differential.getMotor2Power());
+            differentialMotor2.setPower(differentialMotor2Controller.update(differentialMotor2.getVelocity()));
+
 //            telemetry.addData("Diffy 1: ", differential.getMotor1Power());
 //            telemetry.addData("Diffy 2: ", differential.getMotor2Power());
 //            telemetry.addData("Intake Speed", differential.getIntakeSpeed());

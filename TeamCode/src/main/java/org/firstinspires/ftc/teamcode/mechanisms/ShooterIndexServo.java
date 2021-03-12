@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 public class ShooterIndexServo {
-    private final double  servoInPosition = .6;
-    private final double servoOutPosition = .4;
+    private final double  servoInPosition = .5;
+    private final double servoOutPosition = 0.05;
 
     private double servoPosition;
 
