@@ -40,6 +40,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -63,8 +64,8 @@ public class MainTele extends LinearOpMode {
     //Motors and Servos
     private DcMotorEx differentialMotor1;
     private DcMotorEx differentialMotor2;
-    private Servo intakeServo;
-    private Servo servoRaiser;
+    private ServoImplEx intakeServo;
+    private ServoImplEx servoRaiser;
 
     //State Class
     //Mechanism Classes
@@ -123,14 +124,14 @@ public class MainTele extends LinearOpMode {
         differentialMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         differentialMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        differentialMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        differentialMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        differentialMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        differentialMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         differentialMotor1.getMotorType().setAchieveableMaxRPMFraction(1.0);
         differentialMotor2.getMotorType().setAchieveableMaxRPMFraction(1.0);
 
-        intakeServo = hardwareMap.get(Servo.class, "intake_servo");
-        servoRaiser = hardwareMap.get(Servo.class, "servo_raiser");
+        intakeServo = hardwareMap.get(ServoImplEx.class, "intake_servo");
+        servoRaiser = hardwareMap.get(ServoImplEx.class, "servo_raiser");
 
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule module : allHubs) {
@@ -161,13 +162,13 @@ public class MainTele extends LinearOpMode {
             }
 
             drive.update();
-//            drive.setWeightedDrivePower(
-//                    new Pose2d(
-//                            -gamepad1.left_stick_y,
-//                            -gamepad1.left_stick_x*1.1,
-//                            -gamepad1.right_stick_x
-//                    )
-//            );
+            drive.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x*1.1,
+                            -gamepad1.right_stick_x
+                    )
+            );
             //gamepad 2 down, left, right, b, a
             //gamepad 1b, a, x
 
@@ -230,6 +231,7 @@ public class MainTele extends LinearOpMode {
             telemetry.update();
 
         }
+        servoRaiser.setPwmDisable();
     }
     public void setTurretEncoderInitialEncoderPosition() {
         turretEncoder.setInitialTicks(drive.getTurretEncoderPosition());
