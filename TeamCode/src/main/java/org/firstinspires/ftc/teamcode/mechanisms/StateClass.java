@@ -1,6 +1,37 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 public class StateClass {
+    private static IndexReady indexReady;
+    private static ShootingSequence shootingSequenceState;
+
+    public static IndexReady getIndexReady() {
+        return indexReady;
+    }
+
+    public static void setIndexReady(IndexReady indexReady) {
+        StateClass.indexReady = indexReady;
+    }
+
+    public static ShootingSequence getShootingSequenceState() {
+        return shootingSequenceState;
+    }
+
+    public static void setShootingSequenceState(ShootingSequence shootingSequenceState) {
+        StateClass.shootingSequenceState = shootingSequenceState;
+    }
+
+    public enum IndexReady {
+        INDEX_READY,
+        INDEX_NOTREADY
+    }
+
+    public enum ShootingSequence {
+        REVING_UP,
+        NOT_SHOOTING,
+    }
+
+
+
     public enum IntakeState {
         IN,
         OUT,

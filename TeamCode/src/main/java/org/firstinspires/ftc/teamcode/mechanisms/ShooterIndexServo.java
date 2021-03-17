@@ -1,33 +1,39 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
+import com.acmerobotics.dashboard.config.Config;
+
+@Config
 public class ShooterIndexServo {
-    private final double  servoInPosition = .5;
-    private final double servoOutPosition = 0.05;
+    private static double  servoInPosition = 70;
+    private static double servoOutPosition = .65;
 
     private double servoPosition;
 
-    private final double timeIn = 200;
-    private final double timeOut = 200;
+    private final double timeIn = 200;//65;
+    private final double timeOut = 200;//65;
 
     private CountDownTimer countDownTimer;
-
-    public void defaultStateReset() {
-        StateClass.setShooterServoState(StateClass.ShooterServoState.OUT);
-    }
+    private boolean changed = true;
 
     public ShooterIndexServo() {
         countDownTimer = new CountDownTimer();
+    }
+
+    public void defaultStateReset() {
+        servoOut();
+        StateClass.setShooterServoState(StateClass.ShooterServoState.OUT);
     }
 
     public void servoOut() {
         if (StateClass.getShooterServoState() == StateClass.ShooterServoState.IN || StateClass.getShooterServoState() == StateClass.ShooterServoState.MOVING_IN) {
             countDownTimer.setTime(timeOut);
             changed = true;
+            StateClass.setShooterServoState(StateClass.ShooterServoState.MOVING_OUT);
+
         }
         else {
             changed = false;
         }
-        StateClass.setShooterServoState(StateClass.ShooterServoState.MOVING_OUT);
         servoPosition = servoOutPosition;
     }
 
@@ -35,15 +41,13 @@ public class ShooterIndexServo {
         if (StateClass.getShooterServoState() == StateClass.ShooterServoState.OUT || StateClass.getShooterServoState() == StateClass.ShooterServoState.MOVING_OUT) {
             countDownTimer.setTime(timeIn);
             changed = true;
+            StateClass.setShooterServoState(StateClass.ShooterServoState.MOVING_IN);
         }
         else {
             changed = false;
         }
-        StateClass.setShooterServoState(StateClass.ShooterServoState.MOVING_IN);
         servoPosition = servoInPosition;
     }
-
-    private boolean changed;
 
     public boolean wasChanged() {
         return changed;

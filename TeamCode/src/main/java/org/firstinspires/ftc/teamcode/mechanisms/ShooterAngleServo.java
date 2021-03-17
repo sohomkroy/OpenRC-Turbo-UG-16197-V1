@@ -1,13 +1,16 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 public class ShooterAngleServo {
-    public final double initialPosition = .5;
+    public final double initialPosition = .58;
     public double servoPosition;
+    private boolean isChanged = true;
+    public ShooterAngleServo() {
 
-    ShooterAngleServo() {
-        this.servoPosition = initialPosition;
     }
-    private boolean isChanged;
+
+    public void defaultStateRest() {
+        setServoPosition(initialPosition);
+    }
 
     public void setServoPosition(double servoPosition) {
         if (servoPosition == this.servoPosition) {

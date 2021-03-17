@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
+import com.acmerobotics.dashboard.config.Config;
+
+@Config
 public class ServoIntake {
-    private final double  servoUpPosition = .6;
-    private final double servoDownPosition = .4;
-    private final double servoBackPosition = .2;
+    public static double  servoUpPosition = .2;
+    public static double servoDownPosition = .4;
+    public static double servoBackPosition = .2;
 
     private double servoPosition;
 
@@ -11,10 +14,7 @@ public class ServoIntake {
     private final double timeDownToBack = 200;
     private final double timeBackToUp = 200;
     private CountDownTimer countDownTimer;
-
-    public void defaultStateReset() {
-        StateClass.setServoIntakeState(StateClass.ServoIntakeState.UP);
-    }
+    private boolean changed = true;
 
     public ServoIntake() {
         countDownTimer = new CountDownTimer();
@@ -72,7 +72,10 @@ public class ServoIntake {
         return servoPosition;
     }
 
-    private boolean changed;
+    public void defaultStateReset() {
+        StateClass.setServoIntakeState(StateClass.ServoIntakeState.UP);
+        servoUp();
+    }
 
     public boolean wasChanged() {
         return changed;

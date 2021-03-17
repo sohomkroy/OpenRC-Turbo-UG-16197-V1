@@ -4,13 +4,13 @@ import com.acmerobotics.dashboard.config.Config;
 
 @Config
 public class RaisingServo {
-    public static double  servoUpPosition = .3;
-    public static double servoDownPosition = .08;
+    public static double  servoUpPosition = .41;
+    public static double servoDownPosition = .68;
 
     private double servoPosition;
 
-    public static double timeUp = 200;
-    public static double timeDown = 200;
+    public static double timeUp = 400;
+    public static double timeDown = 350;
 
     private CountDownTimer countDownTimer;
 
@@ -21,16 +21,19 @@ public class RaisingServo {
     public RaisingServo() {
         countDownTimer = new CountDownTimer();
     }
+    private boolean changed = true;
 
     public void servoUp() {
         if (StateClass.getServoRaiserState() == StateClass.ServoRaiserState.DOWN || StateClass.getServoRaiserState() == StateClass.ServoRaiserState.MOVING_DOWN) {
             countDownTimer.setTime(timeUp);
             changed = true;
+            StateClass.setServoRaiserState(StateClass.ServoRaiserState.MOVING_UP);
         }
         else {
             changed = false;
         }
-        StateClass.setServoRaiserState(StateClass.ServoRaiserState.MOVING_UP);
+
+
         servoPosition = servoUpPosition;
     }
 
@@ -38,15 +41,13 @@ public class RaisingServo {
         if (StateClass.getServoRaiserState() == StateClass.ServoRaiserState.UP || StateClass.getServoRaiserState() == StateClass.ServoRaiserState.MOVING_UP) {
             countDownTimer.setTime(timeDown);
             changed = true;
+            StateClass.setServoRaiserState(StateClass.ServoRaiserState.MOVING_DOWN);
         }
         else {
             changed = false;
         }
-        StateClass.setServoRaiserState(StateClass.ServoRaiserState.MOVING_DOWN);
         servoPosition = servoDownPosition;
     }
-
-    private boolean changed;
 
     public boolean wasChanged() {
         return changed;

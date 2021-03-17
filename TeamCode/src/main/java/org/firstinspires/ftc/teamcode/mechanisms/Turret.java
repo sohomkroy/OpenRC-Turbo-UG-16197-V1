@@ -4,8 +4,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 
-import kotlin.jvm.functions.Function2;
-
 @Config
 public class Turret {
     private Differential differential;
@@ -32,7 +30,7 @@ public class Turret {
 //        }
 //    });
     public void defaultStateReset(){
-        StateClass.setTurretMovement(StateClass.TurretMovement.MOVING);
+        StateClass.setTurretMovement(StateClass.TurretMovement.STOPPED);
         StateClass.setTurretMovementSpeed(StateClass.TurretMovementSpeed.LOWPOWER);
     }
 
@@ -95,7 +93,10 @@ public class Turret {
         return onTarget;
     }
     private void onTargetCheck() {
-        onTarget = Math.abs(controller.getLastError()) < turretThreshold;
-
+        if (StateClass.getTurretMovement() == StateClass.TurretMovement.STOPPED) {
+            onTarget =  false;
+        } else {
+            onTarget = Math.abs(controller.getLastError()) < turretThreshold;
+        }
     }
 }
