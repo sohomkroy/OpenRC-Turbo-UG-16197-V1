@@ -9,7 +9,7 @@ public class RaisingServo {
 
     private double servoPosition;
 
-    public static double timeUp = 400;
+    public static double timeUp = 800;
     public static double timeDown = 350;
 
     private CountDownTimer countDownTimer;

@@ -1,6 +1,27 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 public class StateClass {
+
+    private static ShootingTarget shootingTarget;
+
+    public static ShootingTarget getShootingTarget() {
+        return shootingTarget;
+    }
+
+    public static void setShootingTarget(ShootingTarget shootingTarget) {
+        StateClass.shootingTarget = shootingTarget;
+    }
+
+    public enum ShootingTarget {
+        HIGH_GOAL,
+        LEFT_POWERSHOT,
+        MIDDLE_POWERSHOT,
+        RIGHT_POWERSHOT
+    }
+
+
+
+
     private static IndexReady indexReady;
     private static ShootingSequence shootingSequenceState;
 

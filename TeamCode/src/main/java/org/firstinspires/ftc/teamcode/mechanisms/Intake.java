@@ -6,10 +6,10 @@ import com.acmerobotics.dashboard.config.Config;
 public class Intake {
     Differential differential;
 
-    public static double intakeSpeed = 1;
-    public static double intakeFastSpeed = 1;
-    public static double outtakeSpeed = -1;
-    public static double outtakeFastSpeed = -1;
+    public static double intakeSpeed = 1.2;
+    public static double intakeFastSpeed = 1.2;
+    public static double outtakeSpeed = -1.2;
+    public static double outtakeFastSpeed = -1.2;
     public static double startingIntakeTime = 200;
     CountDownTimer timer = new CountDownTimer();
 

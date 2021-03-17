@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 
 public class Shooter {
     private double shooterSpeed;
-    double threshold = 50;
+    double threshold = 5;
     public void defaultStateReset() {
         StateClass.setShooterState(StateClass.ShooterState.STOPPED);
     }
@@ -14,16 +14,21 @@ public class Shooter {
         this.shooterSpeed = shooterSpeed;
     }
     public Shooter() {
-        shooterSpeed = -.7;
     }
+    CountDownTimer shooterTimer = new CountDownTimer();
 
     public void updateShooterState(double shooterVelo) {
         if (StateClass.getShooterState() != StateClass.ShooterState.STOPPED) {
             percentError = (shooterVelo - shooterSpeed) / shooterSpeed * 100;
-            if (Math.abs(percentError) < threshold) {
-                StateClass.setShooterState(StateClass.ShooterState.ATSPEED);
+            if (percentError>-1) {
+//                StateClass.setShooterState(StateClass.ShooterState.ATSPEED);
+
+                if (shooterTimer.timeElapsed()) {
+                    StateClass.setShooterState(StateClass.ShooterState.ATSPEED);
+                }
             } else {
                 StateClass.setShooterState(StateClass.ShooterState.WINDINGUP);
+                shooterTimer.setTime(50);
             }
         }
     }
