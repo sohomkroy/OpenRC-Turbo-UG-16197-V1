@@ -347,6 +347,9 @@ public class MainTele extends LinearOpMode {
         servoRaiser.setPwmDisable();
     }
 
+    public CountDownTimer popperTimer;
+    public boolean servoIn = false;
+
     public void updateMechanisms() {
 
         shooterIndexServo.checkServoTimer();
@@ -373,19 +376,30 @@ public class MainTele extends LinearOpMode {
                         readied = true;
 
                         if (StateClass.getIndexReady() == StateClass.IndexReady.INDEX_READY) {
-                            if (StateClass.getShooterServoState() == StateClass.ShooterServoState.OUT && shooterIndexDrop.timeElapsed()) {
-                                shooterIndexServo.servoIn();
-                                ringCount -= 1;
+
+                            if (popperTimer.timeElapsed() && servoIndexer.getPosition()!=.8) {
                                 servoIndexer.setPosition(.8);
-
+                                popperTimer.setTime(100);
+                                ringCount-=1;
                             }
-                            if (StateClass.getShooterServoState() == StateClass.ShooterServoState.IN) {
-                                shooterIndexServo.servoOut();
+                            if (popperTimer.timeElapsed()&& servoIndexer.getPosition()!=.8) {
                                 servoIndexer.setPosition(.65);
-                                shooterIndexDrop.setTime(20);
-
-
+                                popperTimer.setTime(200);
                             }
+
+//                            if (StateClass.getShooterServoState() == StateClass.ShooterServoState.OUT && shooterIndexDrop.timeElapsed()) {
+//                                shooterIndexServo.servoIn();
+//                                ringCount -= 1;
+//                                servoIndexer.setPosition(.8);
+//
+//                            }
+//                            if (StateClass.getShooterServoState() == StateClass.ShooterServoState.IN) {
+//                                shooterIndexServo.servoOut();
+//                                servoIndexer.setPosition(.65);
+//                                shooterIndexDrop.setTime(20);
+//
+//
+//                            }
 
                         }
 
@@ -397,6 +411,7 @@ public class MainTele extends LinearOpMode {
                 }
             } else {
                 servoIndexer.setPosition(.65);
+                servoIn = false;
                 StateClass.setShootingSequenceState(StateClass.ShootingSequence.NOT_SHOOTING);
                 readied = false;
                 StateClass.setIndexReady(StateClass.IndexReady.INDEX_NOTREADY);
