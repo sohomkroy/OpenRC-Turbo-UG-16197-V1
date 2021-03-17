@@ -191,6 +191,8 @@ public class MainTele extends LinearOpMode {
 
         waitForStart();
 
+        popperTimer = new CountDownTimer();
+
 //        kP = shooterMotor1.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER).p;
 //        kD = shooterMotor1.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER).d;
 //        kI = shooterMotor1.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER).i;
@@ -348,7 +350,6 @@ public class MainTele extends LinearOpMode {
     }
 
     public CountDownTimer popperTimer;
-    public boolean servoIn = false;
 
     public void updateMechanisms() {
 
@@ -362,12 +363,12 @@ public class MainTele extends LinearOpMode {
                 StateClass.setShooterState(StateClass.ShooterState.WINDINGUP);
             }
 
-//            if (!readied) {
-//                shooterIndexServo.servoOut();
-//            }
-//            if (StateClass.getShooterState() != StateClass.ShooterState.ATSPEED || StateClass.getServoRaiserState() != StateClass.ServoRaiserState.UP) {
-//                shooterIndexServo.servoOut();
-//            }
+            if (!readied) {
+                shooterIndexServo.servoOut();
+            }
+            if (StateClass.getShooterState() != StateClass.ShooterState.ATSPEED || StateClass.getServoRaiserState() != StateClass.ServoRaiserState.UP) {
+                shooterIndexServo.servoOut();
+            }
 
             raisingServo.servoUp();
             if (ringCount > 0) {
@@ -379,12 +380,12 @@ public class MainTele extends LinearOpMode {
 
                             if (popperTimer.timeElapsed() && servoIndexer.getPosition()!=.8) {
                                 servoIndexer.setPosition(.8);
-                                popperTimer.setTime(100);
+                                popperTimer.setTime(500);
                                 ringCount-=1;
                             }
-                            if (popperTimer.timeElapsed()&& servoIndexer.getPosition()!=.8) {
+                            if (popperTimer.timeElapsed()&& servoIndexer.getPosition()!=.65) {
                                 servoIndexer.setPosition(.65);
-                                popperTimer.setTime(200);
+                                popperTimer.setTime(500);
                             }
 
 //                            if (StateClass.getShooterServoState() == StateClass.ShooterServoState.OUT && shooterIndexDrop.timeElapsed()) {
@@ -411,7 +412,6 @@ public class MainTele extends LinearOpMode {
                 }
             } else {
                 servoIndexer.setPosition(.65);
-                servoIn = false;
                 StateClass.setShootingSequenceState(StateClass.ShootingSequence.NOT_SHOOTING);
                 readied = false;
                 StateClass.setIndexReady(StateClass.IndexReady.INDEX_NOTREADY);
