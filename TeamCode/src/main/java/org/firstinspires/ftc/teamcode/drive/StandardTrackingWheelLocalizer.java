@@ -8,12 +8,10 @@ import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
+import org.firstinspires.ftc.teamcode.drive.util.Encoder;
+
 import java.util.Arrays;
 import java.util.List;
-
-import org.firstinspires.ftc.teamcode.drive.util.Encoder;
 
 /*
  * Sample tracking wheel localizer implementation assuming the standard configuration:
@@ -59,7 +57,7 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
 
     public static double FORWARD_OFFSET = -6.748543307; // in; offset of the lateral wheel
 
-    public static double X_MULTIPLIER = 0.99098357608;
+    public static double X_MULTIPLIER = 0.9988069;
     //0.997
     // 0.978
     //1.0018042
@@ -71,6 +69,8 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
 
     //0.99291979583
     //0.99098357608
+
+    //0.9988069
     public static double Y_MULTIPLIER = 0.99973090283;
     //0.972
     //0.979
