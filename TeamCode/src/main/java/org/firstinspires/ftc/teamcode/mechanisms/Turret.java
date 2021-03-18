@@ -9,14 +9,14 @@ public class Turret {
     private Differential differential;
     private TurretEncoder turretEncoder;
 
-    public static double kP = .005;
-    public static double kD = 0.00001;
+    public static double kP = .08;
+    public static double kD = 0.005;
 
     private double turretTargetPosition;
     public static double kS = 0;
     public static double kI = 0;
     private double turretSlowSpeed = 0;
-    private double turretFastSpeed = 1.5;
+    private double turretFastSpeed = 1.25;
     public static double kV = 0;
     public static double kA = 0;
     private PIDCoefficients turretPIDCoefficients = new PIDCoefficients(kP, kI, kD);
@@ -32,7 +32,7 @@ public class Turret {
         StateClass.setTurretMovement(StateClass.TurretMovement.MOVING);
         StateClass.setTurretMovementSpeed(StateClass.TurretMovementSpeed.LOWPOWER);
 
-        setTurretSlowMode();
+        setTurretFastMode();
     }
 
     public Turret(Differential differential, TurretEncoder turretEncoder) {
@@ -87,7 +87,7 @@ public class Turret {
         onTargetCheck();
     }
 
-    private double turretThreshold = 2;
+    private double turretThreshold = 1;
     private boolean onTarget;
 
     public boolean onTarget() {
@@ -98,6 +98,14 @@ public class Turret {
             onTarget =  false;
         } else {
             onTarget = Math.abs(controller.getLastError()) < turretThreshold;
+            if (onTarget) {
+                StateClass.setTurretPositionState(StateClass.TurretPositionState.ONTARGET);
+            }
+            else {
+                StateClass.setTurretPositionState(StateClass.TurretPositionState.OFFTARGET);
+
+            }
+
         }
     }
 }

@@ -81,9 +81,26 @@ public class StateClass {
     public static void setServoIntakeState(ServoIntakeState servoIntakeState) {
         StateClass.servoIntakeState = servoIntakeState;
     }
-
     public static ServoIntakeState getServoIntakeState() {
         return servoIntakeState;
+    }
+
+    public enum WobbleArmState {
+        UP,
+        BACK,
+        DOWN,
+        MOVING_UP,
+        MOVING_DOWN,
+        MOVING_BACK,
+    }
+
+    private static WobbleArmState wobbleArmState;
+    public static void setWobbleArmState(WobbleArmState wobbleArmState) {
+        StateClass.wobbleArmState = wobbleArmState;
+    }
+
+    public static WobbleArmState getWobbleArmState() {
+        return wobbleArmState;
     }
 
     public enum TurretMovementSpeed {
@@ -180,6 +197,27 @@ public class StateClass {
     public static void setShooterState(ShooterState shooterState) {
         StateClass.shooterState = shooterState;
     }
+
+    public enum WobbleClawState {
+        CLAMPED,
+        OPEN,
+        BACK,
+        MOVING_CLAMPED,
+        MOVING_OPEN,
+        MOVING_BACK
+    }
+
+    private static WobbleClawState wobbleClawState;
+
+    public static void setWobbleClawState(WobbleClawState wobbleClawState) {
+        StateClass.wobbleClawState = wobbleClawState;
+    }
+
+    public static WobbleClawState getWobbleClawState() {
+        return wobbleClawState;
+    }
+
+
 
     public StateClass() {
 

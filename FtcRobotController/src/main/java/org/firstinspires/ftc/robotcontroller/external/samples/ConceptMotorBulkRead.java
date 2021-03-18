@@ -75,7 +75,6 @@ import java.util.List;
 
      */
 @TeleOp (name = "Motor Bulk Reads", group = "Tests")
-@Disabled
 public class ConceptMotorBulkRead extends LinearOpMode {
 
     final int       TEST_CYCLES    = 500;   // Number of control cycles to run to determine cycle times.
@@ -95,10 +94,10 @@ public class ConceptMotorBulkRead extends LinearOpMode {
         int cycles;
 
         // Important Step 1:  Make sure you use DcMotorEx when you instantiate your motors.
-        m1 = hardwareMap.get(DcMotorEx.class, "m1");  // Configure the robot to use these 4 motor names,
-        m2 = hardwareMap.get(DcMotorEx.class, "m2");  // or change these strings to match your existing Robot Configuration.
-        m3 = hardwareMap.get(DcMotorEx.class, "m3");
-        m4 = hardwareMap.get(DcMotorEx.class, "m4");
+        m1 = hardwareMap.get(DcMotorEx.class, "left_front_drive");
+        m2 = hardwareMap.get(DcMotorEx.class, "left_rear_drive");
+        m3 = hardwareMap.get(DcMotorEx.class, "right_rear_drive");
+        m4 = hardwareMap.get(DcMotorEx.class, "right_front_drive");
 
         // Important Step 2: Get access to a list of Expansion Hub Modules to enable changing caching methods.
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);

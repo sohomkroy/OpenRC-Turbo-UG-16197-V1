@@ -37,6 +37,7 @@ import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -57,17 +58,20 @@ import org.firstinspires.ftc.teamcode.mechanisms.ShooterIndexServo;
 import org.firstinspires.ftc.teamcode.mechanisms.StateClass;
 import org.firstinspires.ftc.teamcode.mechanisms.Turret;
 import org.firstinspires.ftc.teamcode.mechanisms.TurretEncoder;
+import org.firstinspires.ftc.teamcode.mechanisms.WobbleClaw;
+import org.firstinspires.ftc.teamcode.mechanisms.WobbleGoal;
 
 import java.util.List;
 
 @Config
 @TeleOp(name="Test Comp", group="CompTele")
 public class MainTele extends LinearOpMode {
+    double t1;
+    final int TOTAL_CYCLES = 1000;
 
     public static int shot1Speed = -1600;
-    public static int shot2Speed = -1650;
-    public static int shot3Speed = -1700;
-
+    public static int shot2Speed = -1600;
+    public static int shot3Speed = -1600;
 
     public static double kP = 25;
     public static double kI = 3;
@@ -84,8 +88,11 @@ public class MainTele extends LinearOpMode {
 
     private ServoImplEx intakeServo;
     private ServoImplEx servoRaiser;
+    private ServoImplEx wobbleServo;
+    private ServoImplEx wobbleClawServo;
     ShooterIndexServo shooterIndexServo = new ShooterIndexServo();
     ShooterAngleServo shooterAngleServo = new ShooterAngleServo();
+
 
     //State Class
     //Mechanism Classes
@@ -93,7 +100,8 @@ public class MainTele extends LinearOpMode {
     Differential differential = new Differential();
     Intake intake = new Intake(differential);
     RaisingServo raisingServo = new RaisingServo();
-
+    WobbleGoal wobbleGoal = new WobbleGoal();
+    WobbleClaw wobbleClaw = new WobbleClaw();
     TurretEncoder turretEncoder = new TurretEncoder();
     Turret turret = new Turret(differential, turretEncoder);
     Shooter shooter = new Shooter();
@@ -136,6 +144,8 @@ public class MainTele extends LinearOpMode {
 
     public CountDownTimer popperTimer;
 
+    ElapsedTime timer = new ElapsedTime();
+    int cycles = 0;
     @Override
     public void runOpMode() {
         drive = new SampleMecanumDrive(hardwareMap);
@@ -179,6 +189,9 @@ public class MainTele extends LinearOpMode {
         servoRaiser = hardwareMap.get(ServoImplEx.class, "servo_raiser");
         servoIndexer = hardwareMap.get(ServoImplEx.class, "servo_indexer");
         shooterAngler = hardwareMap.get(ServoImplEx.class, "angle_servo");
+        wobbleServo = hardwareMap.get(ServoImplEx.class, "wobble_arm");
+        wobbleClawServo = hardwareMap.get(ServoImplEx.class, "wobble_claw");
+
 
         shooterMotor1 = hardwareMap.get(DcMotorEx.class, "shooter_motor_1");
         shooterMotor2 = hardwareMap.get(DcMotorEx.class, "shooter_motor_2");
@@ -223,7 +236,9 @@ public class MainTele extends LinearOpMode {
             drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(0)));
             shooterAngleServo.defaultStateRest();
             StateClass.setShootingSequenceState(StateClass.ShootingSequence.NOT_SHOOTING);
-shooterIndexServo.servoOut();
+            shooterIndexServo.servoOut();
+            wobbleGoal.defaultStateReset();
+            wobbleClaw.defaultStateReset();
         }
         else {
             drive.setPoseEstimate(PoseStorage.currentPose);
@@ -239,6 +254,7 @@ shooterIndexServo.servoOut();
 
 
         //shooterMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(20, 0, 3, 0));
+        timer.reset();
 
         while (opModeIsActive()) {
             for (LynxModule module : allHubs) {
@@ -255,22 +271,22 @@ shooterIndexServo.servoOut();
             );
             //gamepad 2 down, left, right, b, a
             //gamepad 1b, a, x
-
-            if (gamepad2.dpad_down) {
-                if (StateClass.getTurretMovement() == StateClass.TurretMovement.STOPPED) {
-                    turret.startTurret();
-                }
-                else {
-                    turret.stopTurret();
-                }
-            }
-            if (gamepad2.dpad_left) {
-                turret.stopTurret();
-            }
-            if (gamepad2.dpad_right) {
-                turret.startTurret();
-                turret.setTurretFastMode();
-            }
+//
+//            if (gamepad2.dpad_down) {
+//                if (StateClass.getTurretMovement() == StateClass.TurretMovement.STOPPED) {
+//                    turret.startTurret();
+//                }
+//                else {
+//                    turret.stopTurret();
+//                }
+//            }
+//            if (gamepad2.dpad_left) {
+//                turret.stopTurret();
+//            }
+//            if (gamepad2.dpad_right) {
+//                turret.startTurret();
+//                turret.setTurretFastMode();
+//            }
 
 
             if (gamepad1.right_trigger >=.2) {
@@ -348,7 +364,25 @@ shooterIndexServo.servoOut();
 //                shooterIndexServo.servoOut();
 //            }
 
+            if (gamepad2.dpad_left) {
+                wobbleGoal.servoBack();
+            }
+            if (gamepad2.dpad_right) {
+                wobbleGoal.servoDown();
+            }
+            if (gamepad2.dpad_up) {
+                wobbleGoal.servoUp();
+            }
 
+            if (gamepad2.x) {
+                wobbleClaw.servoBack();
+            }
+            if (gamepad2.y) {
+                wobbleClaw.servoOpen();
+            }
+            if (gamepad2.b) {
+                wobbleClaw.servoClamped();
+            }
 
 //            if (gamepad1.dpad_right) {
 //                if (StateClass.getShooterState() == StateClass.ShooterState.STOPPED) {
@@ -388,8 +422,11 @@ shooterIndexServo.servoOut();
             telemetry.update();
 
         }
-        servoRaiser.setPwmDisable();
+        t1 = timer.milliseconds() / cycles;
+        telemetry.addData("timer per cycle", t1);
+        telemetry.update();
     }
+    public boolean setToZero = false;
 
     public void updateMechanisms() {
         //telemetry.addData("shots", shots);
@@ -421,19 +458,21 @@ shooterIndexServo.servoOut();
                         readied = true;
 
                         if (StateClass.getIndexReady() == StateClass.IndexReady.INDEX_READY) {
-                            if (StateClass.getShooterServoState() == StateClass.ShooterServoState.OUT) {
-                                shooterIndexServo.servoIn();
-                                ringCount -= 1;
-                                shots+=1;
+                            if (StateClass.getTurretPositionState() == StateClass.TurretPositionState.ONTARGET) {
+                                if (StateClass.getShooterServoState() == StateClass.ShooterServoState.OUT) {
+                                    shooterIndexServo.servoIn();
+                                    ringCount -= 1;
+                                    shots += 1;
 
-                            }
-                            if (StateClass.getShooterServoState() == StateClass.ShooterServoState.IN) {
-                                shooterIndexServo.servoOut();
-                                if (shots==1) {
-                                    shooter.setShooterSpeed(shot2Speed);
                                 }
-                                if (shots==2) {
-                                    shooter.setShooterSpeed(shot3Speed);
+                                if (StateClass.getShooterServoState() == StateClass.ShooterServoState.IN) {
+                                    shooterIndexServo.servoOut();
+                                    if (shots == 1) {
+                                        shooter.setShooterSpeed(shot2Speed);
+                                    }
+                                    if (shots == 2) {
+                                        shooter.setShooterSpeed(shot3Speed);
+                                    }
                                 }
                             }
 
@@ -451,7 +490,7 @@ shooterIndexServo.servoOut();
                 StateClass.setShootingSequenceState(StateClass.ShootingSequence.NOT_SHOOTING);
                 readied = false;
                 StateClass.setIndexReady(StateClass.IndexReady.INDEX_NOTREADY);
-                turret.stopTurret();
+                //turret.stopTurret();
             }
 
         }
@@ -463,7 +502,7 @@ shooterIndexServo.servoOut();
             shooterIndexServo.servoOut();
             readied = false;
             StateClass.setIndexReady(StateClass.IndexReady.INDEX_NOTREADY);
-            turret.stopTurret();
+            //turret.stopTurret();
         }
 
         if (shooterAngler.getPosition() != shooterAngleServo.getServoPosition()) {
@@ -485,6 +524,17 @@ shooterIndexServo.servoOut();
 
         raisingServo.checkServoTimer();
 
+
+        if (wobbleServo.getPosition() != wobbleGoal.getServoPosition()) {
+            wobbleServo.setPosition(wobbleGoal.getServoPosition());
+        }
+        wobbleGoal.checkServoTimer();
+
+        if (wobbleClawServo.getPosition() != wobbleClaw.getServoPosition()) {
+            wobbleClawServo.setPosition(wobbleClaw.getServoPosition());
+        }
+        wobbleClaw.checkServoTimer();
+
         turretEncoder.setTurretAngle(drive.getTurretEncoderPosition());
         updateTurret();
         turret.setTurretTargetPosition(targetAngle);
@@ -498,13 +548,15 @@ shooterIndexServo.servoOut();
 
             shooterMotor1.setPower(shooterPIDPower);
             shooterMotor2.setPower(shooterPIDPower);
+            setToZero = false;
 
             //shooterMotor1.setVelocity(shooter.getShooterSpeed());
             //shooterMotor2.setPower(shooter.getShooterSpeed()/shooterMotor2.getMotorType().getAchieveableMaxTicksPerSecond());
         }
-        else {
+        else if(!setToZero) {
             shooterMotor1.setPower(0);
             shooterMotor2.setPower(0);
+            setToZero = true;
         }
 
 
@@ -572,7 +624,7 @@ shooterIndexServo.servoOut();
 
             distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 
-            targetAngle = Math.toDegrees(uncorrectedAngle);
+            targetAngle = Math.toDegrees(uncorrectedAngle)+3;
 
             if (targetAngle > turretUpperAngleBound) {
                 targetAngle -= 360;
@@ -583,10 +635,10 @@ shooterIndexServo.servoOut();
             calculateShooterInfo(distance);
 
         }
-        else {
-            targetAngle+=-.01*gamepad2.left_stick_y;
-            targetAngle = Range.clip(targetAngle, turretLowerAngleBound, turretUpperAngleBound);
-        }
+//        else {
+//            targetAngle+=-.01*gamepad2.left_stick_y;
+//            targetAngle = Range.clip(targetAngle, turretLowerAngleBound, turretUpperAngleBound);
+//        }
 
         telemetry.addData("Turret Target Angle", targetAngle);
         telemetry.addData("Turret Targeted", turret.onTarget());
