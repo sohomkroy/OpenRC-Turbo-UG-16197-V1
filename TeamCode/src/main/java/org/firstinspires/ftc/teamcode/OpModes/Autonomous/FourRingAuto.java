@@ -33,20 +33,14 @@ import org.firstinspires.ftc.teamcode.mechanisms.WobbleGoal;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point1;
-import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point10;
-import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point10Heading;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point2;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point2Heading;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point3;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point4;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point5;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point6;
-import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point7;
-import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point7heading;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point8;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point8Heading;
-import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point9;
-import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point9Heading;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.points6Heading;
 
 @Autonomous
@@ -130,9 +124,11 @@ public class FourRingAuto extends LinearOpMode {
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end()).lineTo(point4).build();
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end()).lineTo(point5).build();
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end(), true).splineTo(point6, points6Heading).build();
-        Trajectory traj6 = drive.trajectoryBuilder(traj5.end()).splineTo(point7, point7heading).splineTo(point8, point8Heading).build();
-        Trajectory traj7 = drive.trajectoryBuilder(traj6.end()).splineTo(point9, point9Heading).build();
-        Trajectory traj8 = drive.trajectoryBuilder(traj7.end()).splineTo(point10, point10Heading).build();
+        Trajectory traj6 = drive.trajectoryBuilder(traj5.end().plus(new Pose2d(0, 0, Math.toRadians(-180))), true).splineTo(point8, point8Heading).build();
+        //Trajectory traj7 = drive.trajectoryBuilder(traj6.end(), true).splineTo(point8, point8Heading).build();
+        //Trajectory traj6 = drive.trajectoryBuilder(traj5.end()).splineTo(point8, point8Heading).build();
+
+        //Trajectory traj7 = drive.trajectoryBuilder(traj6.end()).splineTo(point9, point9Heading).build();
 
 
         dashboard = FtcDashboard.getInstance();
@@ -405,43 +401,69 @@ public class FourRingAuto extends LinearOpMode {
                     }
                     break;
                 case TRAJECTORY_5_DONE:
+                    telemetry.addData("State", "Traj 5 Done");
+
                     //shoot
                     wobbleGoal.servoDown();
                     wobbleClaw.servoOpen();
+                    if (StateClass.getWobbleArmState() == StateClass.WobbleArmState.DOWN) {
+                        telemetry.addData("Wobble Arm", "Down");
+                    }
 
-                    if (StateClass.getWobbleArmState() == StateClass.WobbleArmState.DOWN && StateClass.getWobbleClawState()== StateClass.WobbleClawState.MOVING_OPEN) {
-                        drive.followTrajectoryAsync(traj6);
-                        currentState = State.TRAJECTORY_6;
+                    if (StateClass.getWobbleClawState() == StateClass.WobbleClawState.OPEN) {
+                        telemetry.addData("Wobble Claw", "Open");
+                    }
+
+                    if (StateClass.getWobbleArmState() == StateClass.WobbleArmState.DOWN && StateClass.getWobbleClawState() == StateClass.WobbleClawState.OPEN) {
+                        drive.turn(Math.toRadians(-180.0));
+                        currentState = State.TURN;
                     }
                     //if shooting done, state = Trajectory 6
                     //drive.followTrajectoryAsync(traj6);
                     break;
 
+                case TURN:
+                    telemetry.addData("State", "Turning");
+
+                    if (!drive.isBusy()) {
+                        // go to target zone
+                        currentState = State.TRAJECTORY_6;
+                        drive.followTrajectoryAsync(traj6);
+                    }
+                    break;
+
                 case TRAJECTORY_6:
+                    telemetry.addData("State", "Traj 6");
+
                     if (!drive.isBusy()) {
                         // go to target zone
                         currentState = State.TRAJECTORY_6_DONE;
                     }
                     break;
-//                case TRAJECTORY_6_DONE:
-//                    //shoot
-//
-//                    //if shooting done, state = Trajectory 7
-//                    //drive.followTrajectoryAsync(traj7);
-//                    break;
-//
-//                case TRAJECTORY_7:
-//                    if (!drive.isBusy()) {
-//                        // go to target zone
-//                        currentState = State.TRAJECTORY_7_DONE;
-//                    }
-//                    break;
-//                case TRAJECTORY_7_DONE:
-//                    //shoot
-//
-//                    //if shooting done, state = Trajectory 8
-//                    //drive.followTrajectoryAsync(traj8);
-//                    break;
+                case TRAJECTORY_6_DONE:
+                    telemetry.addData("State", "Traj  6 done");
+
+                    telemetry.addData("State", "Traj 6 Done");
+                    wobbleClaw.servoClamped();
+
+                    if (StateClass.getWobbleClawState() == StateClass.WobbleClawState.CLAMPED) {
+                        currentState = State.TRAJECTORY_7;
+                    }
+                    break;
+
+                case TRAJECTORY_7:
+
+                    if (!drive.isBusy()) {
+                        // go to target zone
+                        currentState = State.TRAJECTORY_7_DONE;
+                    }
+                    break;
+                case TRAJECTORY_7_DONE:
+                    //shoot
+
+                    //if shooting done, state = Trajectory 8
+                    //drive.followTrajectoryAsync(traj8);
+                    break;
 //
 //                case TRAJECTORY_8:
 //                    if (!drive.isBusy()) {
@@ -711,7 +733,7 @@ public class FourRingAuto extends LinearOpMode {
 
             distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 
-            targetAngle = Math.toDegrees(uncorrectedAngle)+3;
+            targetAngle = Math.toDegrees(uncorrectedAngle);
 
             if (targetAngle > turretUpperAngleBound) {
                 targetAngle -= 360;
@@ -892,6 +914,10 @@ public class FourRingAuto extends LinearOpMode {
         TRAJECTORY_7_DONE,
         TRAJECTORY_8,
         TRAJECTORY_8_DONE,
+        TRAJECTORY_9,
+        TRAJECTORY_9_DONE,
+        TURN,
+        DONE_TURNING,
         INIT
     }
 }

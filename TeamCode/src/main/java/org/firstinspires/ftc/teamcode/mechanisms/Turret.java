@@ -9,6 +9,12 @@ public class Turret {
     private Differential differential;
     private TurretEncoder turretEncoder;
 
+    private double thresholdTime = 100;
+
+    public void setThresholdTime(double thresholdTime) {
+        this.thresholdTime = thresholdTime;
+    }
+
     public static double kP = .08;
     public static double kD = 0.005;
 
@@ -107,7 +113,7 @@ public class Turret {
             }
             else {
                 StateClass.setTurretPositionState(StateClass.TurretPositionState.OFFTARGET);
-                targetTimer.setTime(100);
+                targetTimer.setTime(thresholdTime);
 
             }
 

@@ -6,9 +6,9 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 public class AutoConstants {
 
     //point 1 starting point
-    public static Pose2d point1 = new Pose2d(-63, 56.9114173, Math.toRadians(180));
+    public static Pose2d point1 = new Pose2d(-63, 17.125, Math.toRadians(180));
     //point2
-    public static Vector2d point2 = new Vector2d(-6.0, 56.9114173);
+    public static Vector2d point2 = new Vector2d(-6.0, 17.125);
     public static double point2Heading = Math.toRadians(0);
     //point3
     public static Vector2d point3 = new Vector2d(-6, 36);
@@ -20,14 +20,14 @@ public class AutoConstants {
     public static Vector2d point6 = new Vector2d(45, 55);
     public static double points6Heading = Math.toRadians(45);
     //point7
-    public static Vector2d point7 = new Vector2d(-36, 0);
-    public static double point7heading = Math.toRadians(22.5);
+    public static Vector2d point7 = new Vector2d(0, 24);
+    public static double point7heading = Math.toRadians(-90);
     //point8
-    public static Vector2d point8 = new Vector2d(-36, 36);
-    public static double point8Heading = Math.toRadians(270);
+    public static Vector2d point8 = new Vector2d(-33, 41);
+    public static double point8Heading = Math.toRadians(180);
     //point9
-    public static Vector2d point9 = new Vector2d(40, 36);
-    public static double point9Heading = Math.toRadians(225);
+    public static Vector2d point9 = new Vector2d(45, 55);
+    public static double point9Heading = Math.toRadians(45);
     //point10
     public static Vector2d point10 = new Vector2d(12, 36);
     public static double point10Heading = Math.toRadians(225);

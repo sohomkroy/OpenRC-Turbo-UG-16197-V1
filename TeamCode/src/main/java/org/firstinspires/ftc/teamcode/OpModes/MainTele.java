@@ -37,13 +37,11 @@ import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.OpModes.Util.PoseStorage;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -624,7 +622,7 @@ public class MainTele extends LinearOpMode {
 
             distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 
-            targetAngle = Math.toDegrees(uncorrectedAngle)+3;
+            targetAngle = Math.toDegrees(uncorrectedAngle);
 
             if (targetAngle > turretUpperAngleBound) {
                 targetAngle -= 360;
