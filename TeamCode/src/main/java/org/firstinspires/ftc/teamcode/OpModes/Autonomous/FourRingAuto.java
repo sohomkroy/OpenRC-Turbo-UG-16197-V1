@@ -33,6 +33,8 @@ import org.firstinspires.ftc.teamcode.mechanisms.WobbleGoal;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point1;
+import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point10;
+import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point10Heading;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point2;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point2Heading;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point3;
@@ -41,15 +43,17 @@ import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.po
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point6;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point8;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point8Heading;
+import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point9;
+import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point9Heading;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.points6Heading;
 
 @Autonomous
 public class FourRingAuto extends LinearOpMode {
-    public static int shot1Speed = -500;
-    public static int shot2Speed = -500;
-    public static int shot3Speed = -500;
-    public static double kP = 25;
-    public static double kI = 3;
+    public static int shot1Speed = -1600;
+    public static int shot2Speed = -1600;
+    public static int shot3Speed = -1600;
+    public static double kP = 60;
+    public static double kI = 8;
     public static double kD = 0;
     final int TOTAL_CYCLES = 1000;
     public int ringCount = 4;
@@ -125,8 +129,8 @@ public class FourRingAuto extends LinearOpMode {
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end()).lineTo(point5).build();
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end(), true).splineTo(point6, points6Heading).build();
         Trajectory traj6 = drive.trajectoryBuilder(traj5.end().plus(new Pose2d(0, 0, Math.toRadians(-180))), true).splineTo(point8, point8Heading).build();
-        //Trajectory traj7 = drive.trajectoryBuilder(traj6.end(), true).splineTo(point8, point8Heading).build();
-        //Trajectory traj6 = drive.trajectoryBuilder(traj5.end()).splineTo(point8, point8Heading).build();
+        Trajectory traj7 = drive.trajectoryBuilder(traj6.end().plus(new Pose2d(0, 0, Math.toRadians(-180))), true).splineTo(point9, point9Heading).build();
+        Trajectory traj8 = drive.trajectoryBuilder(traj7.end()).splineTo(point10, point10Heading).build();
 
         //Trajectory traj7 = drive.trajectoryBuilder(traj6.end()).splineTo(point9, point9Heading).build();
 
@@ -415,14 +419,14 @@ public class FourRingAuto extends LinearOpMode {
                     }
 
                     if (StateClass.getWobbleArmState() == StateClass.WobbleArmState.DOWN && StateClass.getWobbleClawState() == StateClass.WobbleClawState.OPEN) {
-                        drive.turn(Math.toRadians(-180.0));
-                        currentState = State.TURN;
+                        drive.turnAsync(Math.toRadians(-180.0));
+                        currentState = State.TURN_ONE;
                     }
                     //if shooting done, state = Trajectory 6
                     //drive.followTrajectoryAsync(traj6);
                     break;
 
-                case TURN:
+                case TURN_ONE:
                     telemetry.addData("State", "Turning");
 
                     if (!drive.isBusy()) {
@@ -443,15 +447,29 @@ public class FourRingAuto extends LinearOpMode {
                 case TRAJECTORY_6_DONE:
                     telemetry.addData("State", "Traj  6 done");
 
-                    telemetry.addData("State", "Traj 6 Done");
                     wobbleClaw.servoClamped();
 
                     if (StateClass.getWobbleClawState() == StateClass.WobbleClawState.CLAMPED) {
+                        drive.turnAsync(Math.toRadians(-180.0), 20, 4);
+
+                        currentState = State.TURN_TWO;
+//                        wobbleGoal.servoUp();
+//                        if (StateClass.getWobbleArmState() == StateClass.WobbleArmState.UP) {
+//                            currentState = State.TURN_TWO;
+//                        }
+                    }
+                    break;
+                case TURN_TWO:
+                    if (!drive.isBusy()) {
                         currentState = State.TRAJECTORY_7;
+                        drive.followTrajectoryAsync(traj7);
+
                     }
                     break;
 
                 case TRAJECTORY_7:
+                    telemetry.addData("State", "Traj 7");
+
 
                     if (!drive.isBusy()) {
                         // go to target zone
@@ -459,18 +477,23 @@ public class FourRingAuto extends LinearOpMode {
                     }
                     break;
                 case TRAJECTORY_7_DONE:
-                    //shoot
+                    telemetry.addData("State", "Traj 7 Done");
 
-                    //if shooting done, state = Trajectory 8
-                    //drive.followTrajectoryAsync(traj8);
+                    wobbleGoal.servoDown();
+                    wobbleClaw.servoOpen();
+
+                    if (StateClass.getWobbleArmState() == StateClass.WobbleArmState.DOWN && StateClass.getWobbleClawState() == StateClass.WobbleClawState.OPEN) {
+                        currentState = State.TRAJECTORY_8;
+                        drive.followTrajectoryAsync(traj8);
+                    }
                     break;
 //
-//                case TRAJECTORY_8:
-//                    if (!drive.isBusy()) {
-//                        // go to target zone
-//                        currentState = State.TRAJECTORY_8_DONE;
-//                    }
-//                    break;
+                case TRAJECTORY_8:
+                    if (!drive.isBusy()) {
+                        // go to target zone
+                        currentState = State.TRAJECTORY_8_DONE;
+                    }
+                    break;
 //                case TRAJECTORY_8_DONE:
 //                    //shoot
 //
@@ -916,8 +939,10 @@ public class FourRingAuto extends LinearOpMode {
         TRAJECTORY_8_DONE,
         TRAJECTORY_9,
         TRAJECTORY_9_DONE,
-        TURN,
-        DONE_TURNING,
+        TURN_ONE,
+        DONE_TURNING_ONE,
+        TURN_TWO,
+        DONE_TURNING_TWO,
         INIT
     }
 }

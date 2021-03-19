@@ -67,12 +67,12 @@ public class MainTele extends LinearOpMode {
     double t1;
     final int TOTAL_CYCLES = 1000;
 
-    public static int shot1Speed = -1600;
-    public static int shot2Speed = -1600;
-    public static int shot3Speed = -1600;
+    public static int shot1Speed = -1500;
+    public static int shot2Speed = -1500;
+    public static int shot3Speed = -1500;
 
-    public static double kP = 25;
-    public static double kI = 3;
+    public static double kP = 50;
+    public static double kI = 8;
     public static double kD = 0;
 
     // Declare OpMode members.
