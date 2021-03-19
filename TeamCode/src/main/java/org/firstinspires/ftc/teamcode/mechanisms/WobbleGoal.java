@@ -4,8 +4,8 @@ import com.acmerobotics.dashboard.config.Config;
 
 @Config
 public class WobbleGoal {
-    public static double  servoUpPosition = .4;
-    public static double servoDownPosition = .05;
+    public static double  servoUpPosition = .3;
+    public static double servoDownPosition = .05;//.05;
     public static double servoBackPosition = .8;
 
     private double servoPosition;
@@ -82,8 +82,11 @@ public class WobbleGoal {
     }
 
     public void defaultStateReset() {
-        StateClass.setWobbleArmState(StateClass.WobbleArmState.BACK);
-        servoBack();
+        servoUp();
+        StateClass.setWobbleArmState(StateClass.WobbleArmState.UP);
+        servoPosition = 0.6;
+//                StateClass.setWobbleArmState(StateClass.WobbleArmState.BACK);
+//        servoBack();
     }
 
     public boolean wasChanged() {

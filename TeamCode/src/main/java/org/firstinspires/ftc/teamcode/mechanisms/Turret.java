@@ -16,7 +16,7 @@ public class Turret {
     public static double kS = 0;
     public static double kI = 0;
     private double turretSlowSpeed = 0;
-    private double turretFastSpeed = 1.25;
+    CountDownTimer targetTimer = new CountDownTimer();
     public static double kV = 0;
     public static double kA = 0;
     private PIDCoefficients turretPIDCoefficients = new PIDCoefficients(kP, kI, kD);
@@ -89,20 +89,25 @@ public class Turret {
 
     private double turretThreshold = 1;
     private boolean onTarget;
+    private double turretFastSpeed = .6;
 
     public boolean onTarget() {
         return onTarget;
     }
+
     private void onTargetCheck() {
         if (StateClass.getTurretMovement() == StateClass.TurretMovement.STOPPED) {
             onTarget =  false;
         } else {
             onTarget = Math.abs(controller.getLastError()) < turretThreshold;
             if (onTarget) {
-                StateClass.setTurretPositionState(StateClass.TurretPositionState.ONTARGET);
+                if (targetTimer.timeElapsed()) {
+                    StateClass.setTurretPositionState(StateClass.TurretPositionState.ONTARGET);
+                }
             }
             else {
                 StateClass.setTurretPositionState(StateClass.TurretPositionState.OFFTARGET);
+                targetTimer.setTime(100);
 
             }
 

@@ -92,6 +92,7 @@ public class StateClass {
         MOVING_UP,
         MOVING_DOWN,
         MOVING_BACK,
+        IDLE
     }
 
     private static WobbleArmState wobbleArmState;

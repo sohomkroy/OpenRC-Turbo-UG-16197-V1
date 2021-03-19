@@ -5,8 +5,8 @@ import com.acmerobotics.dashboard.config.Config;
 @Config
 public class ServoIntake {
     public static double  servoUpPosition = .2;
-    public static double servoDownPosition = .4;
-    public static double servoBackPosition = .2;
+    public static double servoDownPosition = .0;
+    public static double servoBackPosition = .0;
 
     private double servoPosition;
 
