@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,7 @@ public class LocalizationTest extends LinearOpMode {
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading()*180/Math.PI);
             telemetry.addData("counter", drive.counter);
+            telemetry.addData("lateral distance", StandardTrackingWheelLocalizer.LATERAL_DISTANCE);
 
             telemetry.update();
 
