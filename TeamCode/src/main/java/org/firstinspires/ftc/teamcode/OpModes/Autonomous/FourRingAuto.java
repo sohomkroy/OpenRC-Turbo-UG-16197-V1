@@ -320,7 +320,7 @@ public class FourRingAuto extends LinearOpMode {
 
                     currentState = State.TRAJECTORY_3;
                     drive.followTrajectoryAsync(traj3);
-                    timer.setTime(2000);
+                    timer.setTime(3000);
                     fullRev = false;
                     StateClass.setShootingSequenceState(StateClass.ShootingSequence.REVING_UP);
                     break;
@@ -356,7 +356,7 @@ public class FourRingAuto extends LinearOpMode {
                     if (StateClass.getShootingSequenceState() == StateClass.ShootingSequence.NOT_SHOOTING) {
                         currentState = State.TRAJECTORY_4;
                         drive.followTrajectoryAsync(traj4);
-                        timer.setTime(2000);
+                        timer.setTime(3000);
                     }
                     break;
 
@@ -484,7 +484,11 @@ public class FourRingAuto extends LinearOpMode {
 
                     if (StateClass.getWobbleArmState() == StateClass.WobbleArmState.DOWN && StateClass.getWobbleClawState() == StateClass.WobbleClawState.OPEN) {
                         currentState = State.TRAJECTORY_8;
-                        drive.followTrajectoryAsync(traj8);
+                        //drive.followTrajectoryAsync(traj8);
+                        wobbleClaw.servoBack();
+                        if (StateClass.getWobbleClawState() == StateClass.WobbleClawState.BACK) {
+                            wobbleGoal.servoBack();
+                        }
                     }
                     break;
 //
