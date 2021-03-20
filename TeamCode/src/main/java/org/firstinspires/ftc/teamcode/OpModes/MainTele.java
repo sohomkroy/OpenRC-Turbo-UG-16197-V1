@@ -265,6 +265,7 @@ public class MainTele extends LinearOpMode {
 
         //shooterMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(20, 0, 3, 0));
         timer.reset();
+        shooterAngleServo.setServoPosition(highGoalServoPosition);
 
         while (opModeIsActive()) {
             for (LynxModule module : allHubs) {
@@ -279,7 +280,6 @@ public class MainTele extends LinearOpMode {
                             -gamepad1.right_stick_x
                     )
             );
-            shooterAngleServo.setServoPosition(highGoalServoPosition);
             //gamepad 2 down, left, right, b, a
             //gamepad 1b, a, x
 //
@@ -383,17 +383,24 @@ public class MainTele extends LinearOpMode {
             }
 
             if (gamepad2.x) {
+                StateClass.setGameStage(StateClass.GameStage.TELE_OP);
                 StateClass.setShootingTarget(StateClass.ShootingTarget.LEFT_POWERSHOT);
+                shooterAngleServo.setServoPosition(.57);
             }
             if (gamepad2.b) {
+                StateClass.setGameStage(StateClass.GameStage.TELE_OP);
                 StateClass.setShootingTarget(StateClass.ShootingTarget.MIDDLE_POWERSHOT);
+                shooterAngleServo.setServoPosition(.57);
             }
             if (gamepad2.y) {
+                StateClass.setGameStage(StateClass.GameStage.TELE_OP);
                 StateClass.setShootingTarget(StateClass.ShootingTarget.RIGHT_POWERSHOT);
+                shooterAngleServo.setServoPosition(.57);
             }
             if (gamepad2.a) {
                 StateClass.setGameStage(StateClass.GameStage.ENDGAME);
                 StateClass.setShootingTarget(StateClass.ShootingTarget.RIGHT_POWERSHOT);
+                shooterAngleServo.setServoPosition(.57);
             }
 
             if (gamepad2.dpad_left) {
@@ -401,6 +408,11 @@ public class MainTele extends LinearOpMode {
             }
             if (gamepad2.dpad_right) {
                 drive.setPoseEstimate(new Pose2d(drive.getPoseEstimate().getX(), -15.375, 0));
+            }
+            if (gamepad2.dpad_down) {
+                StateClass.setGameStage(StateClass.GameStage.TELE_OP);
+                StateClass.setShootingTarget(StateClass.ShootingTarget.HIGH_GOAL);
+                shooterAngleServo.setServoPosition(.58);
             }
 
 
@@ -516,7 +528,7 @@ public class MainTele extends LinearOpMode {
                                         if (shots == 2) {
                                             shooter.setShooterSpeed(shot3Speed);
                                             if (StateClass.getGameStage()== StateClass.GameStage.ENDGAME) {
-                                                StateClass.setShootingTarget(StateClass.ShootingTarget.RIGHT_POWERSHOT);
+                                                StateClass.setShootingTarget(StateClass.ShootingTarget.LEFT_POWERSHOT);
                                             }
 
                                         }
@@ -755,7 +767,7 @@ public class MainTele extends LinearOpMode {
                 break;
             case LEFT_POWERSHOT:
                 targetX = 72;
-                targetY = (22.75-4.25);
+                targetY = (22.75-4.25)-2;
                 break;
             case MIDDLE_POWERSHOT:
                 targetX = 72;
@@ -763,7 +775,7 @@ public class MainTele extends LinearOpMode {
                 break;
             case RIGHT_POWERSHOT:
                 targetX = 72;
-                targetY = (22.75-19.5);
+                targetY = (22.75-19.5)-1;
                 break;
         }
     }

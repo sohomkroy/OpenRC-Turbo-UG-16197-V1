@@ -10,6 +10,8 @@ public class AutoConstants {
     //point2
     public static Vector2d point2 = new Vector2d(-6.0, 17.125);
     public static double point2Heading = Math.toRadians(0);
+    public static double point2HeadingV2 = Math.toRadians(180);
+
     //point3
     public static Vector2d point3 = new Vector2d(-6, 34);
     //point4,
@@ -23,7 +25,7 @@ public class AutoConstants {
     public static Vector2d point7 = new Vector2d(0, 24);
     public static double point7heading = Math.toRadians(-90);
     //point8
-    public static Vector2d point8 = new Vector2d(-33, 41);
+    public static Vector2d point8 = new Vector2d(-33, 40);
     public static double point8Heading = Math.toRadians(180);
     //point9
     public static Vector2d point9 = new Vector2d(45, 55);
