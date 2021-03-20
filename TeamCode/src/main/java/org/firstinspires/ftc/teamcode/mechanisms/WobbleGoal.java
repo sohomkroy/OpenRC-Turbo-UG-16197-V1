@@ -89,6 +89,12 @@ public class WobbleGoal {
 //        servoBack();
     }
 
+    public void defaultStateResetTele() {
+        servoBack();
+        StateClass.setWobbleArmState(StateClass.WobbleArmState.BACK);
+//        servoBack();
+    }
+
     public boolean wasChanged() {
         return changed;
     }

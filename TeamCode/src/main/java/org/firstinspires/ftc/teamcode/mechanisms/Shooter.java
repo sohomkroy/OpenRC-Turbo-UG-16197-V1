@@ -20,15 +20,15 @@ public class Shooter {
     public void updateShooterState(double shooterVelo) {
         if (StateClass.getShooterState() != StateClass.ShooterState.STOPPED) {
             percentError = (shooterVelo - shooterSpeed) / shooterSpeed * 100;
-            if (percentError>-1) {
-//                StateClass.setShooterState(StateClass.ShooterState.ATSPEED);
+            if (percentError>=-1) {
+                StateClass.setShooterState(StateClass.ShooterState.ATSPEED);
 
-                if (shooterTimer.timeElapsed()) {
-                    StateClass.setShooterState(StateClass.ShooterState.ATSPEED);
-                }
+//                if (shooterTimer.timeElapsed()) {
+//                    StateClass.setShooterState(StateClass.ShooterState.ATSPEED);
+//                }
             } else {
                 StateClass.setShooterState(StateClass.ShooterState.WINDINGUP);
-                shooterTimer.setTime(50);
+                //shooterTimer.setTime(40);
             }
         }
     }

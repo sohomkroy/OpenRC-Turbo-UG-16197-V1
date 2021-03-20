@@ -83,8 +83,8 @@ public class WobbleClaw {
 
     public void defaultStateReset() {
 
-        StateClass.setWobbleClawState(StateClass.WobbleClawState.CLAMPED);
         servoClamped();
+        StateClass.setWobbleClawState(StateClass.WobbleClawState.CLAMPED);
     }
 
     public boolean wasChanged() {

@@ -9,7 +9,7 @@ public class Turret {
     private Differential differential;
     private TurretEncoder turretEncoder;
 
-    private double thresholdTime = 100;
+    private double thresholdTime = 20;
 
     public void setThresholdTime(double thresholdTime) {
         this.thresholdTime = thresholdTime;
@@ -107,13 +107,14 @@ public class Turret {
         } else {
             onTarget = Math.abs(controller.getLastError()) < turretThreshold;
             if (onTarget) {
-                if (targetTimer.timeElapsed()) {
-                    StateClass.setTurretPositionState(StateClass.TurretPositionState.ONTARGET);
-                }
+                StateClass.setTurretPositionState(StateClass.TurretPositionState.ONTARGET);
+
+//                if (targetTimer.timeElapsed()) {
+//                    StateClass.setTurretPositionState(StateClass.TurretPositionState.ONTARGET);
+//                }
             }
             else {
                 StateClass.setTurretPositionState(StateClass.TurretPositionState.OFFTARGET);
-                targetTimer.setTime(thresholdTime);
 
             }
 

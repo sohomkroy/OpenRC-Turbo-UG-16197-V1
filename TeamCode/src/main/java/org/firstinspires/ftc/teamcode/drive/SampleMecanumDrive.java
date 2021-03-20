@@ -59,8 +59,8 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(12, 0, 0.5);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(18, 5, 0.2);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(18, 0, 0.5);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(19, 5, 0.8);
 
     public static double LATERAL_MULTIPLIER = 1.80865;
 
@@ -127,7 +127,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
-            module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
 
         // TODO: adjust the names of the following hardware devices to match your configuration

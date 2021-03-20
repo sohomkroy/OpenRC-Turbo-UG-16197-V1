@@ -218,7 +218,36 @@ public class StateClass {
         return wobbleClawState;
     }
 
+    private static StickState stickState;
+    private static GameStage gameStage;
 
+    public static StickState getStickState() {
+        return stickState;
+    }
+
+    public static void setStickState(StickState stickState) {
+        StateClass.stickState = stickState;
+    }
+
+    public static GameStage getGameStage() {
+        return gameStage;
+    }
+
+    public static void setGameStage(GameStage gameStage) {
+        StateClass.gameStage = gameStage;
+    }
+
+    public enum StickState {
+        UP,
+        MOVING_UP,
+        MOVING_DOWN,
+        DOWN
+    }
+
+    public enum GameStage {
+        TELE_OP,
+        ENDGAME
+    }
 
     public StateClass() {
 

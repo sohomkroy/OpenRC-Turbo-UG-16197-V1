@@ -27,6 +27,12 @@ public class Intake {
         timer.setTime(startingIntakeTime);
     }
 
+    public void intakeIn(boolean auto) {
+        StateClass.setIntakeState(StateClass.IntakeState.IN);
+        differential.setIntakeSpeed(intakeFastSpeed*.6);
+        timer.setTime(startingIntakeTime);
+    }
+
     public void updateTimer() {
         if (StateClass.getIntakeState() == StateClass.IntakeState.IN && timer.timeElapsed()) {
             differential.setIntakeSpeed(intakeSpeed);
