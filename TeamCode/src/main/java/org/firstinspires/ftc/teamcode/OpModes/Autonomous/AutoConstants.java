@@ -17,10 +17,13 @@ public class AutoConstants {
     //point4,
     public static Vector2d point4 = new Vector2d(-18, 34);
     //point5
-    public static Vector2d point5 = new Vector2d(-24, 34);
+    public static Vector2d point5 = new Vector2d(-28, 34);
     //point6
     public static Vector2d point6 = new Vector2d(45, 55);
     public static double points6Heading = Math.toRadians(45);
+
+    public static Vector2d point6OneRing = new Vector2d(45-21.75, 55-22.75);
+    public static double points6OneRingHeading = Math.toRadians(45);
     //point7
     public static Vector2d point7 = new Vector2d(0, 24);
     public static double point7heading = Math.toRadians(-90);
@@ -30,6 +33,8 @@ public class AutoConstants {
     //point9
     public static Vector2d point9 = new Vector2d(45, 55);
     public static double point9Heading = Math.toRadians(45);
+    public static Vector2d point9OneRing = new Vector2d(45-22.75, 55-24.75);
+    public static double point9OneRingHeading = Math.toRadians(45);
     //point10
     public static Vector2d point10 = new Vector2d(12, 40);
     public static double point10Heading = Math.toRadians(180);

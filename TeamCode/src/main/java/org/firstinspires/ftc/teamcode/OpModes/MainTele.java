@@ -117,7 +117,7 @@ public class MainTele extends LinearOpMode {
 
     SampleMecanumDrive drive;
 
-    public boolean withAuto = false;
+    public boolean withAuto = true;
 
     FtcDashboard dashboard;
 
@@ -159,7 +159,6 @@ public class MainTele extends LinearOpMode {
 
         //TODO create static class to store the position
         setTurretEncoderInitialEncoderPosition();
-        turretEncoder.setInitialAngle(0);
 
 
         differentialMotor1  = hardwareMap.get(DcMotorEx.class, "left_differential_drive");
@@ -240,16 +239,20 @@ public class MainTele extends LinearOpMode {
             raisingServo.defaultStateReset();
             shooter.defaultStateReset();
             shooterIndexServo.defaultStateReset();
-            drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(0)));
+            drive.setPoseEstimate(new Pose2d(-63, 17.125, Math.toRadians(180)));
             shooterAngleServo.defaultStateRest();
             StateClass.setShootingSequenceState(StateClass.ShootingSequence.NOT_SHOOTING);
             shooterIndexServo.servoOut();
             wobbleGoal.defaultStateResetTele();
             wobbleClaw.defaultStateReset();
             stickServo.defaultStateReset();
+            turretEncoder.setInitialAngle(0);
         }
         else {
             drive.setPoseEstimate(PoseStorage.currentPose);
+            turretEncoder.setInitialAngle(PoseStorage.turretAngle);
+            wobbleClaw.servoBack();
+            wobbleClawServo.setPosition(wobbleClaw.getServoPosition());
         }
 
         StateClass.setGameStage(StateClass.GameStage.TELE_OP);
@@ -385,22 +388,22 @@ public class MainTele extends LinearOpMode {
             if (gamepad2.x) {
                 StateClass.setGameStage(StateClass.GameStage.TELE_OP);
                 StateClass.setShootingTarget(StateClass.ShootingTarget.LEFT_POWERSHOT);
-                shooterAngleServo.setServoPosition(.57);
+                shooterAngleServo.setServoPosition(.565);
             }
             if (gamepad2.b) {
                 StateClass.setGameStage(StateClass.GameStage.TELE_OP);
                 StateClass.setShootingTarget(StateClass.ShootingTarget.MIDDLE_POWERSHOT);
-                shooterAngleServo.setServoPosition(.57);
+                shooterAngleServo.setServoPosition(.565);
             }
             if (gamepad2.y) {
                 StateClass.setGameStage(StateClass.GameStage.TELE_OP);
                 StateClass.setShootingTarget(StateClass.ShootingTarget.RIGHT_POWERSHOT);
-                shooterAngleServo.setServoPosition(.57);
+                shooterAngleServo.setServoPosition(.565);
             }
             if (gamepad2.a) {
                 StateClass.setGameStage(StateClass.GameStage.ENDGAME);
                 StateClass.setShootingTarget(StateClass.ShootingTarget.RIGHT_POWERSHOT);
-                shooterAngleServo.setServoPosition(.57);
+                shooterAngleServo.setServoPosition(.565);
             }
 
             if (gamepad2.dpad_left) {
@@ -763,7 +766,7 @@ public class MainTele extends LinearOpMode {
         switch (StateClass.getShootingTarget()) {
             case HIGH_GOAL:
                 targetX = 72;
-                targetY = 34.125;
+                targetY = 34.125-4;
                 break;
             case LEFT_POWERSHOT:
                 targetX = 72;
