@@ -12,13 +12,16 @@ public class CountDownTimer {
 
     private double time;
 
-    public void setTime(double time) {
-        timer.reset();
-        this.time = time;
-    }
+    public boolean timeSet = false;
 
     public boolean timeElapsed() {
         return timer.milliseconds() > time;
+    }
+
+    public void setTime(double time) {
+        timer.reset();
+        this.time = time;
+        timeSet = true;
     }
 
 

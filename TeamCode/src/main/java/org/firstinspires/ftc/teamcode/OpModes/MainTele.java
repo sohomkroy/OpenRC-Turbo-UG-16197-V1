@@ -70,13 +70,13 @@ public class MainTele extends LinearOpMode {
 
     double t1;
     final int TOTAL_CYCLES = 1000;
-    public static int shot2Speed = -1300;
-    public static int shot3Speed = -1300;
+    public static int shot2Speed = -1350;
+    public static int shot3Speed = -1350;
     public boolean fullRev;
 
     public static double kP = 50;
-    public static double kI = 8;
-    public static double kD = 0;
+    public static double kI = 1;
+    public static double kD = 12;
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -84,11 +84,13 @@ public class MainTele extends LinearOpMode {
     //Motors and Servos
     private DcMotorEx differentialMotor1;
     private DcMotorEx differentialMotor2;
-    public int ringCount = 4;
+    public int ringCount = 5;
     public boolean readied = false;
 
     private ServoImplEx intakeServo;
     private ServoImplEx servoRaiser;
+    public boolean withAuto = false;
+
     private ServoImplEx wobbleServo;
     private ServoImplEx wobbleClawServo;
     ShooterIndexServo shooterIndexServo = new ShooterIndexServo();
@@ -116,8 +118,7 @@ public class MainTele extends LinearOpMode {
     private boolean targetingMode = true;
 
     SampleMecanumDrive drive;
-
-    public boolean withAuto = true;
+    double highGoalX = 72;
 
     FtcDashboard dashboard;
 
@@ -151,6 +152,10 @@ public class MainTele extends LinearOpMode {
 
     ElapsedTime timer = new ElapsedTime();
     int cycles = 0;
+    double highGoalY = 34.125-4;
+    public boolean setToZero = false;
+    private ServoImplEx servoRaiser2;
+
     @Override
     public void runOpMode() {
         drive = new SampleMecanumDrive(hardwareMap);
@@ -193,6 +198,7 @@ public class MainTele extends LinearOpMode {
 
         intakeServo = hardwareMap.get(ServoImplEx.class, "intake_servo");
         servoRaiser = hardwareMap.get(ServoImplEx.class, "servo_raiser");
+        servoRaiser2 = hardwareMap.get(ServoImplEx.class, "servo_raiser_two");
         servoIndexer = hardwareMap.get(ServoImplEx.class, "servo_indexer");
         shooterAngler = hardwareMap.get(ServoImplEx.class, "angle_servo");
         wobbleServo = hardwareMap.get(ServoImplEx.class, "wobble_arm");
@@ -216,12 +222,12 @@ public class MainTele extends LinearOpMode {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
 
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
+        //telemetry.addData("Status", "Initialized");
+        //telemetry.update();
 
-        telemetry.addData("kP", kP);
-        telemetry.addData("kI", kI);
-        telemetry.addData("kD", kD);
+        //telemetry.addData("kP", kP);
+        //telemetry.addData("kI", kI);
+        //telemetry.addData("kD", kD);
         telemetry.update();
         waitForStart();
 
@@ -305,11 +311,14 @@ public class MainTele extends LinearOpMode {
 
             if (gamepad1.right_trigger >=.2) {
                 StateClass.setShootingSequenceState(StateClass.ShootingSequence.NOT_SHOOTING);
+                raisingServo.servoDown();
                 intake.intakeIn();
-                turret.stopTurret();
+                //turret.stopTurret();
             }
             if (gamepad1.b) {
                 intake.intakeOut();
+                StateClass.setShootingSequenceState(StateClass.ShootingSequence.NOT_SHOOTING);
+                //turret.stopTurret();
 
             }
             if (gamepad1.left_trigger>=.2) {
@@ -352,7 +361,12 @@ public class MainTele extends LinearOpMode {
                 if (StateClass.getShootingSequenceState() != StateClass.ShootingSequence.REVING_UP) {
                     StateClass.setShootingSequenceState(StateClass.ShootingSequence.REVING_UP);
                     shooterIndexDrop.setTime(0);
-                    ringCount = 4;
+                    if (StateClass.getShootingTarget() == StateClass.ShootingTarget.HIGH_GOAL) {
+                        ringCount = 5;
+                    }
+                    else {
+                        ringCount = 2;
+                    }
                     shooterController.reset();
                     shots = 0;
                     shooter.setShooterSpeed(shot1Speed);
@@ -365,24 +379,27 @@ public class MainTele extends LinearOpMode {
                 StateClass.setIndexReady(StateClass.IndexReady.INDEX_READY);
             }
             if (gamepad1.left_bumper || gamepad2.left_bumper) {
-                if (StateClass.getShootingSequenceState() != StateClass.ShootingSequence.REVING_UP) {
-                    StateClass.setShootingSequenceState(StateClass.ShootingSequence.REVING_UP);
-                    shooterIndexDrop.setTime(0);
-                    ringCount = 4;
-                    shooterController.reset();
-                    shots = 0;
-                    shooter.setShooterSpeed(shot1Speed);
-                    turret.setTurretFastMode();
-                    turret.startTurret();
-                    fullRev = false;
-                }
+//                if (StateClass.getShootingSequenceState() != StateClass.ShootingSequence.REVING_UP) {
+//                    StateClass.setShootingSequenceState(StateClass.ShootingSequence.REVING_UP);
+//                    shooterIndexDrop.setTime(0);
+//                    ringCount = 4;
+//                    shooterController.reset();
+//                    shots = 0;
+//                    shooter.setShooterSpeed(shot1Speed);
+//                    turret.setTurretFastMode();
+//                    turret.startTurret();
+//                    fullRev = false;
+//                }
+                StateClass.setShootingSequenceState(StateClass.ShootingSequence.NOT_SHOOTING);
             }
 
             if (gamepad2.right_trigger>.2) {
-                stickServo.servoDown();
+                highGoalY-=.2;
+                //stickServo.servoDown();
             }
             if (gamepad2.left_trigger>.2) {
-                stickServo.servoUp();
+                highGoalY+=.2;
+                //stickServo.servoUp();
             }
 
             if (gamepad2.x) {
@@ -390,21 +407,22 @@ public class MainTele extends LinearOpMode {
                 StateClass.setShootingTarget(StateClass.ShootingTarget.LEFT_POWERSHOT);
                 shooterAngleServo.setServoPosition(.565);
             }
-            if (gamepad2.b) {
+            if (gamepad2.y) {
                 StateClass.setGameStage(StateClass.GameStage.TELE_OP);
                 StateClass.setShootingTarget(StateClass.ShootingTarget.MIDDLE_POWERSHOT);
                 shooterAngleServo.setServoPosition(.565);
             }
-            if (gamepad2.y) {
+            if (gamepad2.b) {
                 StateClass.setGameStage(StateClass.GameStage.TELE_OP);
                 StateClass.setShootingTarget(StateClass.ShootingTarget.RIGHT_POWERSHOT);
                 shooterAngleServo.setServoPosition(.565);
             }
-            if (gamepad2.a) {
-                StateClass.setGameStage(StateClass.GameStage.ENDGAME);
-                StateClass.setShootingTarget(StateClass.ShootingTarget.RIGHT_POWERSHOT);
-                shooterAngleServo.setServoPosition(.565);
-            }
+
+//            if (gamepad2.a) {
+//                StateClass.setGameStage(StateClass.GameStage.ENDGAME);
+//                StateClass.setShootingTarget(StateClass.ShootingTarget.RIGHT_POWERSHOT);
+//                shooterAngleServo.setServoPosition(.565);
+//            }
 
             if (gamepad2.dpad_left) {
                 drive.setPoseEstimate(new Pose2d(drive.getPoseEstimate().getX(), 62.875, 0));
@@ -412,6 +430,7 @@ public class MainTele extends LinearOpMode {
             if (gamepad2.dpad_right) {
                 drive.setPoseEstimate(new Pose2d(drive.getPoseEstimate().getX(), -15.375, 0));
             }
+
             if (gamepad2.dpad_down) {
                 StateClass.setGameStage(StateClass.GameStage.TELE_OP);
                 StateClass.setShootingTarget(StateClass.ShootingTarget.HIGH_GOAL);
@@ -451,9 +470,10 @@ public class MainTele extends LinearOpMode {
             updateMechanisms();
             updateTargetPosition();
             //reportServoTelemetry();
+            telemetry.addData("turret power", turret.getControllerOutput());
             reportTurretTelemetry();
             //reportIntakeTelemetry();
-            reportShooterTelemetry();
+            //reportShooterTelemetry();
             telemetry.addData("x", myPose.getX());
             telemetry.addData("y", myPose.getY());
             telemetry.addData("heading", myPose.getHeading());
@@ -471,7 +491,11 @@ public class MainTele extends LinearOpMode {
         telemetry.addData("timer per cycle", t1);
         telemetry.update();
     }
-    public boolean setToZero = false;
+
+    public void calculateShooterInfo(double distance) {
+        //replace with some function that does something
+        //shooter.setShooterSpeed(.8);
+    }
 
     public void updateMechanisms() {
         //telemetry.addData("shots", shots);
@@ -504,46 +528,52 @@ public class MainTele extends LinearOpMode {
 
                 raisingServo.servoUp();
                 if (ringCount > 0) {
-                    telemetry.addData("Ring Count", ringCount);
+                    //telemetry.addData("Ring Count", ringCount);
                     if (StateClass.getServoRaiserState() == StateClass.ServoRaiserState.UP) {
-                        telemetry.addData("Up", "up");
+                        //telemetry.addData("Up", "up");
 
-                        if (StateClass.getShooterState() == StateClass.ShooterState.ATSPEED) {
-                            readied = true;
+
 
                             if (StateClass.getIndexReady() == StateClass.IndexReady.INDEX_READY) {
                                 if (StateClass.getTurretPositionState() == StateClass.TurretPositionState.ONTARGET) {
-                                    if (StateClass.getShooterServoState() == StateClass.ShooterServoState.OUT) {
-                                        shooterIndexServo.servoIn();
-                                        ringCount -= 1;
-                                        shots += 1;
+
+
+
+                                    if (StateClass.getShooterState() == StateClass.ShooterState.ATSPEED) {
+                                        readied = true;
+
+                                        if (StateClass.getShooterServoState() == StateClass.ShooterServoState.OUT) {
+                                            shooterIndexServo.servoIn();
+                                            ringCount -= 1;
+                                            shots += 1;
+
+                                        }
 
                                     }
                                     if (StateClass.getShooterServoState() == StateClass.ShooterServoState.IN) {
                                         shooterIndexServo.servoOut();
                                         if (shots == 1) {
                                             shooter.setShooterSpeed(shot2Speed);
-                                            if (StateClass.getGameStage()== StateClass.GameStage.ENDGAME) {
-                                                StateClass.setShootingTarget(StateClass.ShootingTarget.MIDDLE_POWERSHOT);
-                                            }
+//                                            if (StateClass.getGameStage()== StateClass.GameStage.ENDGAME) {
+//                                                StateClass.setShootingTarget(StateClass.ShootingTarget.MIDDLE_POWERSHOT);
+//                                            }
 
                                         }
                                         if (shots == 2) {
                                             shooter.setShooterSpeed(shot3Speed);
-                                            if (StateClass.getGameStage()== StateClass.GameStage.ENDGAME) {
-                                                StateClass.setShootingTarget(StateClass.ShootingTarget.LEFT_POWERSHOT);
-                                            }
+//                                            if (StateClass.getGameStage()== StateClass.GameStage.ENDGAME) {
+//                                                StateClass.setShootingTarget(StateClass.ShootingTarget.LEFT_POWERSHOT);
+//                                            }
 
                                         }
                                     }
-                                }
 
                             }
 
                         }
 
                     } else {
-                        telemetry.addData("Ready to shoot", "Servo Raiser is not up");
+                        //telemetry.addData("Ready to shoot", "Servo Raiser is not up");
                     }
 
                 } else {
@@ -551,7 +581,7 @@ public class MainTele extends LinearOpMode {
                     StateClass.setShootingSequenceState(StateClass.ShootingSequence.NOT_SHOOTING);
                     readied = false;
                     StateClass.setIndexReady(StateClass.IndexReady.INDEX_NOTREADY);
-
+                    turret.controller.reset();
                     turret.stopTurret();
                 }
             }
@@ -565,12 +595,14 @@ public class MainTele extends LinearOpMode {
 
 
         if (StateClass.getShootingSequenceState() == StateClass.ShootingSequence.NOT_SHOOTING) {
-            raisingServo.servoDown();
+            //raisingServo.servoDown();
             StateClass.setShooterState(StateClass.ShooterState.STOPPED);
             shooterIndexServo.servoOut();
             readied = false;
             StateClass.setIndexReady(StateClass.IndexReady.INDEX_NOTREADY);
             turret.stopTurret();
+            turret.stopTurret();
+            //turret.controller.reset();
         }
 
         if (shooterAngler.getPosition() != shooterAngleServo.getServoPosition()) {
@@ -589,7 +621,8 @@ public class MainTele extends LinearOpMode {
 //            servoRaiser.setPosition(raisingServo.getServoPosition());
 //
 //        }
-        servoRaiser.setPosition(raisingServo.getServoPosition());
+        servoRaiser.setPosition(raisingServo.getServoPosition1());
+        servoRaiser2.setPosition(raisingServo.getServoPosition2());
 
         raisingServo.checkServoTimer();
 
@@ -614,10 +647,10 @@ public class MainTele extends LinearOpMode {
 
         if (true) {//(StateClass.getShooterState() != StateClass.ShooterState.STOPPED) {
             shooterController.setTargetPosition(-1);
-            telemetry.addData("measured position", -shooterMotor1.getVelocity()/shooter.getShooterSpeed());
+            //telemetry.addData("measured position", -shooterMotor1.getVelocity()/shooter.getShooterSpeed());
 
             shooterPIDPower = shooterController.update(-shooterMotor1.getVelocity()/shooter.getShooterSpeed());
-            telemetry.addData("PID", "updating pid");
+            //telemetry.addData("PID", "updating pid");
             //shooterPIDPower = 0.5;
             shooterMotor1.setPower(shooterPIDPower);
             shooterMotor2.setPower(shooterPIDPower);
@@ -689,27 +722,26 @@ public class MainTele extends LinearOpMode {
 //            //probably remove this later
 //            turretEncoder.setTurretAngle(drive.getTurretEncoderPosition());
 //        }
-        intake.updateTimer();
-        if (differential.wasChanged()) {
-
-//            differentialMotor1Controller.setTargetPosition(differentialMotor1.getMotorType().getAchieveableMaxTicksPerSecond() * differential.getMotor1Power());
-//            differentialMotor1.setPower(differentialMotor1Controller.update(differentialMotor1.getVelocity()));
+        //intake.updateTimer();
+//        if (differential.wasChanged()) {
 //
-//            differentialMotor2Controller.setTargetPosition(differentialMotor2.getMotorType().getAchieveableMaxTicksPerSecond() * differential.getMotor2Power());
-//            differentialMotor2.setPower(differentialMotor2Controller.update(differentialMotor2.getVelocity()));
+////            differentialMotor1Controller.setTargetPosition(differentialMotor1.getMotorType().getAchieveableMaxTicksPerSecond() * differential.getMotor1Power());
+////            differentialMotor1.setPower(differentialMotor1Controller.update(differentialMotor1.getVelocity()));
+////
+////            differentialMotor2Controller.setTargetPosition(differentialMotor2.getMotorType().getAchieveableMaxTicksPerSecond() * differential.getMotor2Power());
+////            differentialMotor2.setPower(differentialMotor2Controller.update(differentialMotor2.getVelocity()));
+////
+//            differentialMotor1.setPower(differential.getMotor1Power());
+//            differentialMotor2.setPower(differential.getMotor2Power());
 //
-            differentialMotor1.setPower(differential.getMotor1Power());
-            differentialMotor2.setPower(differential.getMotor2Power());
-
-//            telemetry.addData("Diffy 1: ", differential.getMotor1Power());
-//            telemetry.addData("Diffy 2: ", differential.getMotor2Power());
-//            telemetry.addData("Intake Speed", differential.getIntakeSpeed());
-//            telemetry.addData("Turret Speed", differential.getTurretSpeed());
-//            telemetry.addData("Velo1", differentialMotor1.getVelocity());
-//            telemetry.addData("Velo2", differentialMotor2.getVelocity());
-        }
+////            telemetry.addData("Diffy 1: ", differential.getMotor1Power());
+////            telemetry.addData("Diffy 2: ", differential.getMotor2Power());
+////            telemetry.addData("Intake Speed", differential.getIntakeSpeed());
+////            telemetry.addData("Turret Speed", differential.getTurretSpeed());
+////            telemetry.addData("Velo1", differentialMotor1.getVelocity());
+////            telemetry.addData("Velo2", differentialMotor2.getVelocity());
+//        }
     }
-
 
     public void updateTurret() {
         if (targetingMode) {
@@ -744,6 +776,17 @@ public class MainTele extends LinearOpMode {
             if (targetAngle < turretLowerAngleBound) {
                 targetAngle += 360;
             }
+            //double turretLowerAngleBound = -270;
+            //    double turretUpperAngleBound = 100;
+            if (targetAngle<-225) {
+                targetAngle = -225;
+            }
+
+            if (targetAngle>45) {
+                targetAngle = 45;
+            }
+
+
             calculateShooterInfo(distance);
 
         }
@@ -757,28 +800,23 @@ public class MainTele extends LinearOpMode {
 
     }
 
-    public void calculateShooterInfo(double distance) {
-        //replace with some function that does something
-        //shooter.setShooterSpeed(.8);
-    }
-
     public void updateTargetPosition() {
         switch (StateClass.getShootingTarget()) {
             case HIGH_GOAL:
-                targetX = 72;
-                targetY = 34.125-4;
+                targetX = highGoalX;
+                targetY = highGoalY;
                 break;
             case LEFT_POWERSHOT:
                 targetX = 72;
-                targetY = (22.75-4.25)-2;
+                targetY = (22.75-4.25)-10;
                 break;
             case MIDDLE_POWERSHOT:
                 targetX = 72;
-                targetY = (22.75-11.0);
+                targetY = (22.75-11.0)-10;
                 break;
             case RIGHT_POWERSHOT:
                 targetX = 72;
-                targetY = (22.75-19.5)-1;
+                targetY = (22.75-19.5)-10;
                 break;
         }
     }

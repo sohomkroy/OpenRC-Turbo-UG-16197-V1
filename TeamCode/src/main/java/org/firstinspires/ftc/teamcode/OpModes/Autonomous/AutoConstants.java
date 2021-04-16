@@ -8,18 +8,20 @@ public class AutoConstants {
     //point 1 starting point
     public static Pose2d point1 = new Pose2d(-63, 17.125, Math.toRadians(180));
     //point2
-    public static Vector2d point2 = new Vector2d(-6.0, 17.125);
+//    public static Vector2d point2 = new Vector2d(-6.0, 17.125);
+    public static Vector2d point2 = new Vector2d(-5.99, 34);
+
     public static double point2Heading = Math.toRadians(0);
     public static double point2HeadingV2 = Math.toRadians(180);
 
     //point3
     public static Vector2d point3 = new Vector2d(-6, 34);
     //point4,
-    public static Vector2d point4 = new Vector2d(-18, 34);
+    public static Vector2d point4 = new Vector2d(-16, 34);
     //point5
-    public static Vector2d point5 = new Vector2d(-28, 34);
+    public static Vector2d point5 = new Vector2d(-24, 34);
     //point6
-    public static Vector2d point6 = new Vector2d(45, 55);
+    public static Vector2d point6 = new Vector2d(42, 54);
     public static double points6Heading = Math.toRadians(45);
 
     public static Vector2d point6OneRing = new Vector2d(45-21.75, 55-22.75);
@@ -31,7 +33,7 @@ public class AutoConstants {
     public static Vector2d point8 = new Vector2d(-33, 40);
     public static double point8Heading = Math.toRadians(180);
     //point9
-    public static Vector2d point9 = new Vector2d(45, 55);
+    public static Vector2d point9 = new Vector2d(42, 54);
     public static double point9Heading = Math.toRadians(45);
     public static Vector2d point9OneRing = new Vector2d(45-22.75, 55-24.75);
     public static double point9OneRingHeading = Math.toRadians(45);

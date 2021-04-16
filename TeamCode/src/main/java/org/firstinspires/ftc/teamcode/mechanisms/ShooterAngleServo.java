@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 public class ShooterAngleServo {
-    public static double initialPosition = .59;
+    public static double initialPosition = .58;
     public double servoPosition;
     private boolean isChanged = true;
     public ShooterAngleServo() {

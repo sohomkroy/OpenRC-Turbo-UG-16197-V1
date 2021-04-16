@@ -5,7 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 @Config
 public class WobbleClaw {
     public static double  servoOpenPosition = .55; //open
-    public static double servoClampedPosition = .33; // clamped
+    public static double servoClampedPosition = .32; // clamped
     public static double servoBackPosition = .74; // back
 
     private double servoPosition;

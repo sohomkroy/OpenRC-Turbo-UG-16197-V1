@@ -5,28 +5,25 @@ import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 
 @Config
-public class Turret {
-    private Differential differential;
-    private TurretEncoder turretEncoder;
-
-    private double thresholdTime = 20;
-
-    public void setThresholdTime(double thresholdTime) {
-        this.thresholdTime = thresholdTime;
-    }
-
-    public static double kP = .08;
-    public static double kD = 0.005;
-
-    private double turretTargetPosition;
-    public static double kS = 0;
-    public static double kI = 0;
-    private double turretSlowSpeed = 0;
-    CountDownTimer targetTimer = new CountDownTimer();
-    public static double kV = 0;
-    public static double kA = 0;
-    private PIDCoefficients turretPIDCoefficients = new PIDCoefficients(kP, kI, kD);
-    private PIDFController controller = new PIDFController(turretPIDCoefficients, kV, kA, 0);
+    public class Turret {
+        public static double kP = .1;
+        public static double kD = 0.002;
+        public static double kS = 0;
+        public static double kI = .00015;
+        public static double kV = 0;
+        public static double kA = 0;
+        //0.005
+        CountDownTimer targetTimer = new CountDownTimer();
+        private Differential differential;
+        private TurretEncoder turretEncoder;
+        private double thresholdTime = 20;
+        private double turretTargetPosition;
+        //0.1
+        private double turretSlowSpeed = 0.5;
+        private PIDCoefficients turretPIDCoefficients = new PIDCoefficients(kP, kI, kD);
+        public PIDFController controller = new PIDFController(turretPIDCoefficients, kV, kA, 0);
+    private double turretThreshold = .3;
+    private double turretFastSpeed = .5;
 
 //    private PIDFController controller = new PIDFController(turretPIDCoefficients, 0, 0, kS, new Function2<Double, Double, Double>() {
 //        @Override
@@ -37,7 +34,6 @@ public class Turret {
     public void defaultStateReset(){
         StateClass.setTurretMovement(StateClass.TurretMovement.MOVING);
         StateClass.setTurretMovementSpeed(StateClass.TurretMovementSpeed.LOWPOWER);
-
         setTurretFastMode();
     }
 
@@ -73,29 +69,53 @@ public class Turret {
         StateClass.setTurretMovement(StateClass.TurretMovement.STOPPED);
     }
     private double controllerOutput;
+
+        public void setThresholdTime(double thresholdTime) {
+            this.thresholdTime = thresholdTime;
+        }
+
+    public double getControllerOutput() {
+        return controllerOutput;
+    }
+    private boolean onTarget;
+
     public void updateTurret() {
         switch (StateClass.getTurretMovement()) {
             case MOVING:
                 controllerOutput = controller.update(turretEncoder.getTurretAngle());
                 if (controllerOutput>0) {
-                    controllerOutput+=kS;
+                    if (Math.abs(controller.getLastError()) > turretThreshold*.75) {
+                        controllerOutput+=kS;
+                    }
                 }
                 else if (controllerOutput<0) {
-                    controllerOutput-=kS;
+                    if (Math.abs(controller.getLastError()) > turretThreshold*.75) {
+                        controllerOutput-=kS;
+                    }
                 }
                 //controllerOutput = kS;
                 differential.setTurretSpeed(controllerOutput);
                 break;
             case STOPPED:
-                differential.setTurretSpeed(0);
+                controllerOutput = controller.update(turretEncoder.getTurretAngle());
+                if (controllerOutput>0) {
+                    if (Math.abs(controller.getLastError()) > turretThreshold*.75) {
+                        controllerOutput+=kS;
+                    }
+                }
+                else if (controllerOutput<0) {
+                    if (Math.abs(controller.getLastError()) > turretThreshold*.75) {
+                        controllerOutput-=kS;
+                    }
+                }
+                //controllerOutput = kS;
+                differential.setTurretSpeed(controllerOutput);
                 break;
+//                differential.setTurretSpeed(0);
+//                break;
         }
         onTargetCheck();
     }
-
-    private double turretThreshold = 1;
-    private boolean onTarget;
-    private double turretFastSpeed = .6;
 
     public boolean onTarget() {
         return onTarget;
@@ -105,6 +125,12 @@ public class Turret {
         if (StateClass.getTurretMovement() == StateClass.TurretMovement.STOPPED) {
             onTarget =  false;
         } else {
+            if (StateClass.getShootingTarget() == StateClass.ShootingTarget.HIGH_GOAL) {
+                turretThreshold = .5;
+            }
+            else {
+                turretThreshold = .35;
+            }
             onTarget = Math.abs(controller.getLastError()) < turretThreshold;
             if (onTarget) {
                 StateClass.setTurretPositionState(StateClass.TurretPositionState.ONTARGET);

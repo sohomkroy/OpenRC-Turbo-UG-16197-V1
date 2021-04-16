@@ -83,7 +83,7 @@ public class ServoTester extends LinearOpMode {
         while (opModeIsActive()) {
             servo.setPosition(.75);
             sleep(500);
-            servo.setPosition(.65);
+            servo.setPosition(.62);
             sleep(500);
 
         }

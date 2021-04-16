@@ -4,10 +4,14 @@ import com.acmerobotics.dashboard.config.Config;
 
 @Config
 public class RaisingServo {
-    public static double  servoUpPosition = .41;
-    public static double servoDownPosition = .68;
+    public static double  servoUpPosition = .72;
+    public static double servoDownPosition = .98;
 
-    private double servoPosition;
+    public static double  servoUpPosition2 = .81;
+    public static double  servoDownPosition2 = .56;
+
+    private double servoPosition1;
+    private double servoPosition2;
 
     public static double timeUp = 800;
     public static double timeDown = 350;
@@ -34,7 +38,8 @@ public class RaisingServo {
         }
 
 
-        servoPosition = servoUpPosition;
+        servoPosition1 = servoUpPosition;
+        servoPosition2 = servoUpPosition2;
     }
 
     public void servoDown() {
@@ -46,7 +51,8 @@ public class RaisingServo {
         else {
             changed = false;
         }
-        servoPosition = servoDownPosition;
+        servoPosition1 = servoDownPosition;
+        servoPosition2 = servoDownPosition2;
     }
 
     public boolean wasChanged() {
@@ -66,7 +72,11 @@ public class RaisingServo {
         }
     }
 
-    public double getServoPosition() {
-        return servoPosition;
+    public double getServoPosition1() {
+        return servoPosition1;
     }
+    public double getServoPosition2() {
+        return servoPosition2;
+    }
+
 }

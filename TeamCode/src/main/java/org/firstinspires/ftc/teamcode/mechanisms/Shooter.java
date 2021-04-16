@@ -20,7 +20,7 @@ public class Shooter {
     public void updateShooterState(double shooterVelo) {
         if (StateClass.getShooterState() != StateClass.ShooterState.STOPPED) {
             percentError = (shooterVelo - shooterSpeed) / shooterSpeed * 100;
-            if (percentError>=-1) {
+            if (Math.abs(percentError) <= 3) {
                 StateClass.setShooterState(StateClass.ShooterState.ATSPEED);
 
 //                if (shooterTimer.timeElapsed()) {

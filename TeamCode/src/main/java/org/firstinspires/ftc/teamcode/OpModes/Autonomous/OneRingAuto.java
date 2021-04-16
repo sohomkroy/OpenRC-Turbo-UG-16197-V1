@@ -40,35 +40,25 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point1;
-import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point10;
-import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point10Heading;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point2;
-import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point2Heading;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point2HeadingV2;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point3;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point4;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point5;
-import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point6;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point6OneRing;
-import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point7;
-import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point7heading;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point8;
-import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point8Heading;
-import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point9;
-import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point9Heading;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point9OneRing;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.point9OneRingHeading;
-import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.points6Heading;
 import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.points6OneRingHeading;
 
 @Autonomous
 public class OneRingAuto extends LinearOpMode {
     public static int shot1Speed = -1350;
-    public static int shot2Speed = -1300;
-    public static int shot3Speed = -1300;
+    public static int shot2Speed = -1350;
+    public static int shot3Speed = -1350;
     public static double kP = 50;
-    public static double kI = 8;
-    public static double kD = 0;
+    public static double kI = 1;
+    public static double kD = 12;
     final int TOTAL_CYCLES = 1000;
     public int ringCount = 4;
     public boolean readied = false;
@@ -134,6 +124,8 @@ public class OneRingAuto extends LinearOpMode {
     }
 
     public boolean needsToShoot = true;
+    public CountDownTimer turretPositionTimer = new CountDownTimer();
+    public boolean stopTurret = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -152,14 +144,14 @@ public class OneRingAuto extends LinearOpMode {
                         )
                 ),
                 new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL)).build();
-//        Trajectory traj5 = drive.trajectoryBuilder(traj4.end()).lineTo(point5, new MinVelocityConstraint(
-//                        Arrays.asList(
-//                                new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-//                                new MecanumVelocityConstraint(10, DriveConstants.TRACK_WIDTH)
-//                        )
-//                ),
-//                new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL)).build();
-        Trajectory traj6 = drive.trajectoryBuilder(traj4.end().plus(new Pose2d(0, 0, Math.toRadians(-180))), true).lineToConstantHeading(point8).build();
+        Trajectory traj5 = drive.trajectoryBuilder(traj4.end()).lineTo(point5, new MinVelocityConstraint(
+                        Arrays.asList(
+                                new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
+                                new MecanumVelocityConstraint(10, DriveConstants.TRACK_WIDTH)
+                        )
+                ),
+                new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL)).build();
+        Trajectory traj6 = drive.trajectoryBuilder(traj5.end().plus(new Pose2d(0, 0, Math.toRadians(-180))), true).lineToConstantHeading(point8).build();
         Trajectory traj7 = drive.trajectoryBuilder(traj6.end().plus(new Pose2d(0, 0, Math.toRadians(-180))), true).splineTo(point9OneRing, point9OneRingHeading).build();
         Trajectory traj8 = drive.trajectoryBuilder(traj7.end()).forward(30).build();
 
@@ -252,7 +244,7 @@ public class OneRingAuto extends LinearOpMode {
         shooterIndexServo.servoOut();
         wobbleGoal.defaultStateReset();
         wobbleClaw.defaultStateReset();
-        StateClass.setShootingTarget(StateClass.ShootingTarget.LEFT_POWERSHOT);
+        StateClass.setShootingTarget(StateClass.ShootingTarget.HIGH_GOAL);
         StateClass.setShooterState(StateClass.ShooterState.STOPPED);
         StateClass.setTurretPositionState(StateClass.TurretPositionState.OFFTARGET);
         stickServo.defaultStateReset();
@@ -285,6 +277,7 @@ public class OneRingAuto extends LinearOpMode {
         CountDownTimer wobbleGoalIteratingTimer = new CountDownTimer();
         wobbleGoalIteratingTimer.setTime(40);
         int wobbleGoalCounter = 1;
+        turret.setTurretSlowMode();
         while (opModeIsActive() && !isStopRequested()) {
             for (LynxModule module : allHubs) {
                 module.clearBulkCache();
@@ -292,14 +285,13 @@ public class OneRingAuto extends LinearOpMode {
 
             switch (currentState) {
                 case WAITING_FOR_WOBBLE:
-                    StateClass.setShootingTarget(StateClass.ShootingTarget.LEFT_POWERSHOT);
+                    StateClass.setShootingTarget(StateClass.ShootingTarget.HIGH_GOAL);
                     currentState = State.TRAJECTORY_1;
                     shooterIndexDrop.setTime(0);
                     ringCount = 4;
                     shots = 0;
                     shooter.setShooterSpeed(shot1Speed);
-                    turret.setTurretFastMode();
-                    wobbleGoal.servoDown();
+                    //turret.setTurretFastMode();
                     break;
 
                 case TRAJECTORY_1:
@@ -315,16 +307,13 @@ public class OneRingAuto extends LinearOpMode {
 
                     //shoot
                     wobbleGoal.servoDown();
+                    wobbleClaw.servoOpen();
 
-                    if (StateClass.getWobbleArmState()== StateClass.WobbleArmState.DOWN) {
-                        wobbleClaw.servoOpen();
+                    currentState = State.TRAJECTORY_2;
+                    drive.followTrajectoryAsync(traj2);
 
-                        currentState = State.TRAJECTORY_2;
-                        drive.followTrajectoryAsync(traj2);
-
-                        turret.startTurret();
-                        StateClass.setShootingSequenceState(StateClass.ShootingSequence.REVING_UP);
-                    }
+                    turret.startTurret();
+                    StateClass.setShootingSequenceState(StateClass.ShootingSequence.REVING_UP);
 
 
 
@@ -352,7 +341,9 @@ public class OneRingAuto extends LinearOpMode {
                     if (!drive.isBusy()) {
                         // go to target zone
                         currentState = State.TRAJECTORY_2_DONE;
-                        leftPowerShotTimer.setTime(300);
+                        //leftPowerShotTimer.setTime(300);
+                        leftPowerShotTimer.setTime(2500);
+
                     }
                     break;
                 case TRAJECTORY_2_DONE:
@@ -362,6 +353,7 @@ public class OneRingAuto extends LinearOpMode {
 
                     if (StateClass.getShootingSequenceState() == StateClass.ShootingSequence.NOT_SHOOTING) {
                         currentState = State.TRAJECTORY_3;
+
                         drive.followTrajectoryAsync(traj3);
                         servoIntake.servoDown();
                         stickServo.servoUp();
@@ -381,7 +373,6 @@ public class OneRingAuto extends LinearOpMode {
 
                 case TRAJECTORY_3:
                     telemetry.addData("State", "Traj 3");
-
                     //intake.intakeIn();
                     if (!drive.isBusy() ) {//&& timer.timeElapsed()) {
                         // go to target zone
@@ -411,6 +402,10 @@ public class OneRingAuto extends LinearOpMode {
                     intake.intakeIn();
                     currentState = State.TRAJECTORY_4;
                     drive.followTrajectoryAsync(traj4);
+                    shot1Speed = -1400;
+                    shot2Speed = -1400;
+                    shot3Speed = -1400;
+                    StateClass.setShootingTarget(StateClass.ShootingTarget.HIGH_GOAL);
                     timer.setTime(2000);
 //                    }
 //                    break;
@@ -439,19 +434,19 @@ public class OneRingAuto extends LinearOpMode {
                     intake.intakeStop();
                     shooterIndexDrop.setTime(0);
                     shooter.setShooterSpeed(shot1Speed);
-                    turret.setTurretFastMode();
+                    //turret.setTurretFastMode();
                     turret.startTurret();
                     StateClass.setIndexReady(StateClass.IndexReady.INDEX_READY);
 
                     if (StateClass.getShootingSequenceState()== StateClass.ShootingSequence.NOT_SHOOTING) {
-                        //drive.followTrajectoryAsync(traj5);
-                        //timer.setTime(2000);
-                        //intake.intakeIn();
+                        shot1Speed = -1420;
+                        shot2Speed = -1420;
+                        shot3Speed = -1420;
+                        currentState = State.TRAJECTORY_5;
+                        drive.followTrajectoryAsync(traj5);
+                        timer.setTime(2000);
+                        intake.intakeIn();
                         //needsToShoot = false;
-                        currentState = State.TURN_ONE;
-
-                        needsToShoot = false;
-                        drive.turnAsync(Math.toRadians(180));
                     }
 
                     //if shooting done, state = Trajectory 5
@@ -470,25 +465,24 @@ public class OneRingAuto extends LinearOpMode {
                     break;
                 case TRAJECTORY_5_DONE:
                     telemetry.addData("State", "Traj 5 Done");
-                    shooterAngleServo.setServoPosition(.59);
                     //shoot
                     fullRev = true;
                     intake.intakeStop();
                     shooterIndexDrop.setTime(0);
                     shots = 0;
                     shooter.setShooterSpeed(shot1Speed);
-                    turret.setTurretFastMode();
+                    //turret.setTurretFastMode();
                     turret.startTurret();
                     StateClass.setIndexReady(StateClass.IndexReady.INDEX_READY);
 
                     if (StateClass.getShootingSequenceState()== StateClass.ShootingSequence.NOT_SHOOTING) {
+                        stopTurret = true;
                         //currentState = State.TRAJECTORY_5;
                         //drive.followTrajectoryAsync(traj5);
                         //timer.setTime(3000);
                         //intake.intakeIn();
                         currentState = State.TURN_ONE;
 
-                        needsToShoot = false;
                         drive.turnAsync(Math.toRadians(180));
 
                     }
@@ -516,6 +510,7 @@ public class OneRingAuto extends LinearOpMode {
                     telemetry.addData("State", "Turn 1");
                     if (!drive.isBusy()) {
                         // go to target zone
+                        needsToShoot = false;
                         currentState = State.TRAJECTORY_6;
                         drive.followTrajectoryAsync(traj6);
                     }
@@ -570,13 +565,15 @@ public class OneRingAuto extends LinearOpMode {
                     wobbleClaw.servoOpen();
 
                     if (StateClass.getWobbleArmState() == StateClass.WobbleArmState.DOWN && StateClass.getWobbleClawState() == StateClass.WobbleClawState.OPEN) {
+
+                        drive.followTrajectoryAsync(traj8);
+
                         wobbleClaw.servoBack();
-                        if (StateClass.getWobbleClawState() == StateClass.WobbleClawState.BACK) {
-                            wobbleGoal.servoBack();
-                        }
+//                        if (StateClass.getWobbleClawState() == StateClass.WobbleClawState.CLAMPED) {
+//                            wobbleGoal.servoBack();
+//                        }
                         stickServo.servoDown();
                         currentState = State.TRAJECTORY_8;
-                        drive.followTrajectoryAsync(traj8);
 
                     }
                     break;
@@ -630,6 +627,7 @@ public class OneRingAuto extends LinearOpMode {
 
     }
     public CountDownTimer leftPowerShotTimer = new CountDownTimer();
+
     public void updateMechanisms() {
         //telemetry.addData("shots", shots);
 
@@ -670,6 +668,11 @@ public class OneRingAuto extends LinearOpMode {
 
                             if (StateClass.getIndexReady() == StateClass.IndexReady.INDEX_READY) {
                                 if (StateClass.getTurretPositionState() == StateClass.TurretPositionState.ONTARGET) {
+
+//                                    if (!leftPowerShotTimer.timeSet) {
+//                                        leftPowerShotTimer.setTime(100);
+//                                    }
+
                                     if (currentState == State.TRAJECTORY_2_DONE && leftPowerShotTimer.timeElapsed()) {
                                         if (StateClass.getShooterServoState() == StateClass.ShooterServoState.OUT) {
                                             shooterIndexServo.servoIn();
@@ -681,21 +684,22 @@ public class OneRingAuto extends LinearOpMode {
                                             shooterIndexServo.servoOut();
                                             if (shots == 1) {
                                                 shooter.setShooterSpeed(shot2Speed);
-                                                if (currentState == State.TRAJECTORY_2_DONE) {
-                                                    StateClass.setShootingTarget(StateClass.ShootingTarget.MIDDLE_POWERSHOT);
-                                                }
+//                                                if (currentState == State.TRAJECTORY_2_DONE) {
+//                                                    StateClass.setShootingTarget(StateClass.ShootingTarget.MIDDLE_POWERSHOT);
+//                                                    //turret.setTurretFastMode();
+//                                                }
 
                                             }
                                             if (shots == 2) {
                                                 shooter.setShooterSpeed(shot3Speed);
-                                                if (currentState == State.TRAJECTORY_2_DONE) {
-                                                    StateClass.setShootingTarget(StateClass.ShootingTarget.RIGHT_POWERSHOT);
-                                                }
+//                                                if (currentState == State.TRAJECTORY_2_DONE) {
+//                                                    StateClass.setShootingTarget(StateClass.ShootingTarget.RIGHT_POWERSHOT);
+//                                                }
 
                                             }
                                         }
                                     }
-                                    else {
+                                    else if (leftPowerShotTimer.timeElapsed()) {
                                         if (StateClass.getShooterServoState() == StateClass.ShooterServoState.OUT) {
                                             shooterIndexServo.servoIn();
                                             ringCount -= 1;
@@ -706,21 +710,24 @@ public class OneRingAuto extends LinearOpMode {
                                             shooterIndexServo.servoOut();
                                             if (shots == 1) {
                                                 shooter.setShooterSpeed(shot2Speed);
-                                                if (currentState == State.TRAJECTORY_2_DONE) {
-                                                    StateClass.setShootingTarget(StateClass.ShootingTarget.MIDDLE_POWERSHOT);
-                                                }
+//                                                if (currentState == State.TRAJECTORY_2_DONE) {
+//                                                    StateClass.setShootingTarget(StateClass.ShootingTarget.MIDDLE_POWERSHOT);
+//                                                }
 
                                             }
                                             if (shots == 2) {
                                                 shooter.setShooterSpeed(shot3Speed);
-                                                if (currentState == State.TRAJECTORY_2_DONE) {
-                                                    StateClass.setShootingTarget(StateClass.ShootingTarget.RIGHT_POWERSHOT);
-                                                }
+//                                                if (currentState == State.TRAJECTORY_2_DONE) {
+//                                                    StateClass.setShootingTarget(StateClass.ShootingTarget.RIGHT_POWERSHOT);
+//                                                }
 
                                             }
                                         }
                                     }
 
+                                }
+                                else {
+                                    telemetry.addData("Waiting for left powershot", "");
                                 }
 
                             }
@@ -736,7 +743,6 @@ public class OneRingAuto extends LinearOpMode {
                     StateClass.setShootingSequenceState(StateClass.ShootingSequence.NOT_SHOOTING);
                     readied = false;
                     StateClass.setIndexReady(StateClass.IndexReady.INDEX_NOTREADY);
-                    StateClass.setShootingTarget(StateClass.ShootingTarget.HIGH_GOAL);
 
                     turret.stopTurret();
                 }
@@ -775,7 +781,7 @@ public class OneRingAuto extends LinearOpMode {
 //            servoRaiser.setPosition(raisingServo.getServoPosition());
 //
 //        }
-        servoRaiser.setPosition(raisingServo.getServoPosition());
+        servoRaiser.setPosition(raisingServo.getServoPosition1());
 
         raisingServo.checkServoTimer();
 
@@ -845,8 +851,17 @@ public class OneRingAuto extends LinearOpMode {
 //            differentialMotor2Controller.setTargetPosition(differentialMotor2.getMotorType().getAchieveableMaxTicksPerSecond() * differential.getMotor2Power());
 //            differentialMotor2.setPower(differentialMotor2Controller.update(differentialMotor2.getVelocity()));
 //
-            differentialMotor1.setPower(differential.getMotor1Power());
-            differentialMotor2.setPower(differential.getMotor2Power());
+            if (!stopTurret) {
+                differentialMotor1.setPower(differential.getMotor1Power());
+                differentialMotor2.setPower(differential.getMotor2Power());
+            }
+            else  {
+                differentialMotor1.setPower(0);
+                differentialMotor2.setPower(0);
+            }
+
+//            differentialMotor1.setPower(0);
+//                differentialMotor2.setPower(0);
 
 //            telemetry.addData("Diffy 1: ", differential.getMotor1Power());
 //            telemetry.addData("Diffy 2: ", differential.getMotor2Power());
@@ -891,9 +906,21 @@ public class OneRingAuto extends LinearOpMode {
                 targetAngle += 360;
             }
 
-            if (currentState == State.TRAJECTORY_1 || currentState ==State.TRAJECTORY_2 || currentState ==State.TRAJECTORY_1_DONE) {
-                targetAngle = -180;
+            if (targetAngle<-225) {
+                targetAngle = -225;
             }
+
+            if (targetAngle>45) {
+                targetAngle = 45;
+            }
+
+            if (currentState == State.TRAJECTORY_1 || currentState ==State.TRAJECTORY_2 || currentState ==State.TRAJECTORY_1_DONE) {
+                targetAngle = -90;
+            }
+
+//            if (currentState == State.TRAJECTORY_7_DONE) {
+//                targetAngle = 0;
+//            }
             calculateShooterInfo(distance);
 
         }
@@ -917,24 +944,24 @@ public class OneRingAuto extends LinearOpMode {
             case HIGH_GOAL:
                 targetX = 72;
                 targetY = 34.125;
-                if (shooterAngleServo.servoPosition != .59) {
+                if (shooterAngleServo.servoPosition != 58) {
                     shooterAngleServo.setServoPosition(.58);
                 }
                 break;
             case LEFT_POWERSHOT:
                 targetX = 72;
-                targetY = (22.75-6.25);;//(22.75-4.25);
-                shooterAngleServo.setServoPosition(.55);
+                targetY = (22.75-6.25-4);;//(22.75-4.25);
+                shooterAngleServo.setServoPosition(.555);
                 break;
             case MIDDLE_POWERSHOT:
                 targetX = 72;
                 targetY = (22.75-14);//11.0);
-                shooterAngleServo.setServoPosition(.55);
+                shooterAngleServo.setServoPosition(.555);
                 break;
             case RIGHT_POWERSHOT:
                 targetX = 72;
                 targetY = (22.75-21.5);
-                shooterAngleServo.setServoPosition(.55);
+                shooterAngleServo.setServoPosition(.555);
                 break;
         }
     }
