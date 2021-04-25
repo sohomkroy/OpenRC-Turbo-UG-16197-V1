@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.OpModes;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
@@ -49,6 +50,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @TeleOp(name="ServoTester", group="Linear Opmode")
+@Config
 public class ServoTester extends LinearOpMode {
 
     // Declare OpMode members.
@@ -56,7 +58,8 @@ public class ServoTester extends LinearOpMode {
     private ServoImplEx servo;
 //    private DcMotorEx leftDrive = null;
 //    private DcMotorEx rightDrive = null;
-
+    public static double in = .52;
+    public static double out = .52;
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -68,7 +71,7 @@ public class ServoTester extends LinearOpMode {
 //        leftDrive  = hardwareMap.get(DcMotorEx.class, "left_drive");
 //        rightDrive = hardwareMap.get(DcMotorEx.class, "right_drive");
 
-        servo = hardwareMap.get(ServoImplEx.class, "servo_indexer");
+        servo = hardwareMap.get(ServoImplEx.class, "stick_servo");
 
         // Most robots need the motor on one side to be reversed to org.firstinspires.ftc.teamcode.drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -81,9 +84,9 @@ public class ServoTester extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            servo.setPosition(.75);
+            servo.setPosition(in);
             sleep(500);
-            servo.setPosition(.62);
+            servo.setPosition(out);
             sleep(500);
 
         }

@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 
 @Config
 public class RaisingServo {
-    public static double  servoUpPosition = .72;
+    public static double  servoUpPosition = .77;
     public static double servoDownPosition = .98;
 
     public static double  servoUpPosition2 = .81;
@@ -13,7 +13,7 @@ public class RaisingServo {
     private double servoPosition1;
     private double servoPosition2;
 
-    public static double timeUp = 800;
+    public static double timeUp = 1000;
     public static double timeDown = 350;
 
     private CountDownTimer countDownTimer;

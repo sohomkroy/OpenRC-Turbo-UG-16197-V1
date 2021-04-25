@@ -31,6 +31,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.ShooterAngleServo;
 import org.firstinspires.ftc.teamcode.mechanisms.ShooterIndexServo;
 import org.firstinspires.ftc.teamcode.mechanisms.StateClass;
 import org.firstinspires.ftc.teamcode.mechanisms.StickServo;
+import org.firstinspires.ftc.teamcode.mechanisms.TiltingRotationServo;
 import org.firstinspires.ftc.teamcode.mechanisms.Turret;
 import org.firstinspires.ftc.teamcode.mechanisms.TurretEncoder;
 import org.firstinspires.ftc.teamcode.mechanisms.WobbleClaw;
@@ -118,6 +119,7 @@ public class FourRingAutoV2 extends LinearOpMode {
     private ServoImplEx servoIndexer;
     private ServoImplEx shooterAngler;
     private ServoImplEx servoStick;
+    private ServoImplEx rotationServo;
 
     public void setTurretEncoderInitialEncoderPosition() {
         turretEncoder.setInitialTicks(drive.getTurretEncoderPosition());
@@ -140,14 +142,14 @@ public class FourRingAutoV2 extends LinearOpMode {
                 new MinVelocityConstraint(
                         Arrays.asList(
                                 new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                                new MecanumVelocityConstraint(10, DriveConstants.TRACK_WIDTH)
+                                new MecanumVelocityConstraint(5, DriveConstants.TRACK_WIDTH)
                         )
                 ),
                 new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL)).build();
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end()).lineTo(point5, new MinVelocityConstraint(
                         Arrays.asList(
                                 new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                                new MecanumVelocityConstraint(10, DriveConstants.TRACK_WIDTH)
+                                new MecanumVelocityConstraint(5, DriveConstants.TRACK_WIDTH)
                         )
                 ),
                 new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL)).build();
@@ -204,6 +206,8 @@ public class FourRingAutoV2 extends LinearOpMode {
         wobbleServo = hardwareMap.get(ServoImplEx.class, "wobble_arm");
         wobbleClawServo = hardwareMap.get(ServoImplEx.class, "wobble_claw");
         servoStick = hardwareMap.get(ServoImplEx.class, "stick_servo");
+        rotationServo = hardwareMap.get(ServoImplEx.class, "tilt_servo");
+
 
 
         shooterMotor1 = hardwareMap.get(DcMotorEx.class, "shooter_motor_1");
@@ -283,6 +287,10 @@ public class FourRingAutoV2 extends LinearOpMode {
                 module.clearBulkCache();
             }
 
+            if (StateClass.getIntakeState()==StateClass.IntakeState.IN) {
+                rotationServo.setPosition(TiltingRotationServo.frontDegreePoint);
+            }
+            servoStick.setPosition(.52);
             switch (currentState) {
                 case WAITING_FOR_WOBBLE:
                     StateClass.setShootingTarget(StateClass.ShootingTarget.HIGH_GOAL);
@@ -356,7 +364,6 @@ public class FourRingAutoV2 extends LinearOpMode {
 
                         drive.followTrajectoryAsync(traj3);
                         servoIntake.servoDown();
-                        stickServo.servoUp();
                     }
 
                     //shoot
@@ -572,7 +579,7 @@ public class FourRingAutoV2 extends LinearOpMode {
 //                        if (StateClass.getWobbleClawState() == StateClass.WobbleClawState.CLAMPED) {
 //                            wobbleGoal.servoBack();
 //                        }
-                        stickServo.servoDown();
+                        //stickServo.servoDown();
                         currentState = State.TRAJECTORY_8;
 
                     }
@@ -631,10 +638,10 @@ public class FourRingAutoV2 extends LinearOpMode {
     public void updateMechanisms() {
         //telemetry.addData("shots", shots);
 
-        if (servoStick.getPosition() != stickServo.getServoPosition()) {
-            servoStick.setPosition(stickServo.getServoPosition());
-        }
-        stickServo.checkServoTimer();
+//        if (servoStick.getPosition() != stickServo.getServoPosition()) {
+//            servoStick.setPosition(stickServo.getServoPosition());
+//        }
+//        stickServo.checkServoTimer();
 
         if (servoIndexer.getPosition() != shooterIndexServo.getServoPosition()) {
             servoIndexer.setPosition(shooterIndexServo.getServoPosition());
@@ -650,14 +657,9 @@ public class FourRingAutoV2 extends LinearOpMode {
                     StateClass.setShooterState(StateClass.ShooterState.WINDINGUP);
                 }
 
-                if (!readied) {
-                    //shooterIndexServo.servoOut();
-                }
-                if (StateClass.getShooterState() != StateClass.ShooterState.ATSPEED || StateClass.getServoRaiserState() != StateClass.ServoRaiserState.UP) {
-                    //shooterIndexServo.servoOut();
-                }
-
                 raisingServo.servoUp();
+                rotationServo.setPosition(TiltingRotationServo.angleToPosition(targetAngle));
+
                 if (ringCount > 0) {
                     telemetry.addData("Ring Count", ringCount);
                     if (StateClass.getServoRaiserState() == StateClass.ServoRaiserState.UP) {
@@ -944,8 +946,8 @@ public class FourRingAutoV2 extends LinearOpMode {
             case HIGH_GOAL:
                 targetX = 72;
                 targetY = 34.125;
-                if (shooterAngleServo.servoPosition != 58) {
-                    shooterAngleServo.setServoPosition(.58);
+                if (shooterAngleServo.servoPosition != 505) {
+                    shooterAngleServo.setServoPosition(.505);
                 }
                 break;
             case LEFT_POWERSHOT:

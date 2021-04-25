@@ -4,13 +4,13 @@ import com.acmerobotics.dashboard.config.Config;
 
 @Config
 public class ShooterIndexServo {
-    public static double  servoInPosition = .80;
-    public static double servoOutPosition = .62;
+    public static double  servoInPosition = .75;
+    public static double servoOutPosition = .61;
 
     private double servoPosition;
 
-    private final double timeIn = 100;//65;
-    private final double timeOut = 200;//65;
+    private final double timeIn = 110;//65;
+    private final double timeOut = 110;//65;
 
     private CountDownTimer countDownTimer;
     private boolean changed = true;

@@ -55,6 +55,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.ShooterAngleServo;
 import org.firstinspires.ftc.teamcode.mechanisms.ShooterIndexServo;
 import org.firstinspires.ftc.teamcode.mechanisms.StateClass;
 import org.firstinspires.ftc.teamcode.mechanisms.StickServo;
+import org.firstinspires.ftc.teamcode.mechanisms.TiltingRotationServo;
 import org.firstinspires.ftc.teamcode.mechanisms.Turret;
 import org.firstinspires.ftc.teamcode.mechanisms.TurretEncoder;
 import org.firstinspires.ftc.teamcode.mechanisms.WobbleClaw;
@@ -65,13 +66,14 @@ import java.util.List;
 @Config
 @TeleOp(name="Test Comp", group="CompTele")
 public class MainTele extends LinearOpMode {
-    public static double highGoalServoPosition = .58;
-    public static int shot1Speed = -1350;
+    public static double highGoalServoPosition = .51;
+    public static int shot1Speed = -1300;
+    public static int shot2Speed = -1300;
 
     double t1;
     final int TOTAL_CYCLES = 1000;
-    public static int shot2Speed = -1350;
-    public static int shot3Speed = -1350;
+    public static int shot3Speed = -1300;
+    public boolean override = false;
     public boolean fullRev;
 
     public static double kP = 50;
@@ -110,7 +112,6 @@ public class MainTele extends LinearOpMode {
     Shooter shooter = new Shooter();
     CountDownTimer shooterIndexDrop = new CountDownTimer();
     StickServo stickServo = new StickServo();
-
     public int shots = 0;
     public double shooterPIDPower;
     private double targetAngle;
@@ -135,6 +136,7 @@ public class MainTele extends LinearOpMode {
     private DcMotorEx shooterMotor2;
     private ServoImplEx servoIndexer;
     private ServoImplEx servoStick;
+    private ServoImplEx rotationServo;
 
 
     double deltaX, deltaY;
@@ -203,6 +205,8 @@ public class MainTele extends LinearOpMode {
         shooterAngler = hardwareMap.get(ServoImplEx.class, "angle_servo");
         wobbleServo = hardwareMap.get(ServoImplEx.class, "wobble_arm");
         wobbleClawServo = hardwareMap.get(ServoImplEx.class, "wobble_claw");
+        rotationServo = hardwareMap.get(ServoImplEx.class, "tilt_servo");
+
 
 
         shooterMotor1 = hardwareMap.get(DcMotorEx.class, "shooter_motor_1");
@@ -253,12 +257,14 @@ public class MainTele extends LinearOpMode {
             wobbleClaw.defaultStateReset();
             stickServo.defaultStateReset();
             turretEncoder.setInitialAngle(0);
+            stickServo.servoUp();
         }
         else {
             drive.setPoseEstimate(PoseStorage.currentPose);
             turretEncoder.setInitialAngle(PoseStorage.turretAngle);
             wobbleClaw.servoBack();
             wobbleClawServo.setPosition(wobbleClaw.getServoPosition());
+            stickServo.servoUp();
         }
 
         StateClass.setGameStage(StateClass.GameStage.TELE_OP);
@@ -312,9 +318,18 @@ public class MainTele extends LinearOpMode {
             if (gamepad1.right_trigger >=.2) {
                 StateClass.setShootingSequenceState(StateClass.ShootingSequence.NOT_SHOOTING);
                 raisingServo.servoDown();
+                rotationServo.setPosition(TiltingRotationServo.frontDegreePoint);
                 intake.intakeIn();
                 //turret.stopTurret();
             }
+
+            if (StateClass.getIntakeState() == StateClass.IntakeState.STOPPED) {
+                stickServo.servoDown();
+            }
+            else {
+                stickServo.servoUp();
+            }
+
             if (gamepad1.b) {
                 intake.intakeOut();
                 StateClass.setShootingSequenceState(StateClass.ShootingSequence.NOT_SHOOTING);
@@ -323,6 +338,7 @@ public class MainTele extends LinearOpMode {
             }
             if (gamepad1.left_trigger>=.2) {
                 intake.intakeStop();
+
             }
 
             if (gamepad1.x) {
@@ -391,6 +407,16 @@ public class MainTele extends LinearOpMode {
 //                    fullRev = false;
 //                }
                 StateClass.setShootingSequenceState(StateClass.ShootingSequence.NOT_SHOOTING);
+                raisingServo.servoDown();
+                rotationServo.setPosition(TiltingRotationServo.frontDegreePoint);
+
+            }
+
+            if (gamepad2.right_stick_y<-.2) {
+                override = true;
+            }
+            else {
+                override = false;
             }
 
             if (gamepad2.right_trigger>.2) {
@@ -405,17 +431,17 @@ public class MainTele extends LinearOpMode {
             if (gamepad2.x) {
                 StateClass.setGameStage(StateClass.GameStage.TELE_OP);
                 StateClass.setShootingTarget(StateClass.ShootingTarget.LEFT_POWERSHOT);
-                shooterAngleServo.setServoPosition(.565);
+                shooterAngleServo.setServoPosition(.53);
             }
             if (gamepad2.y) {
                 StateClass.setGameStage(StateClass.GameStage.TELE_OP);
                 StateClass.setShootingTarget(StateClass.ShootingTarget.MIDDLE_POWERSHOT);
-                shooterAngleServo.setServoPosition(.565);
+                shooterAngleServo.setServoPosition(.53);
             }
             if (gamepad2.b) {
                 StateClass.setGameStage(StateClass.GameStage.TELE_OP);
                 StateClass.setShootingTarget(StateClass.ShootingTarget.RIGHT_POWERSHOT);
-                shooterAngleServo.setServoPosition(.565);
+                shooterAngleServo.setServoPosition(.53);
             }
 
 //            if (gamepad2.a) {
@@ -434,7 +460,7 @@ public class MainTele extends LinearOpMode {
             if (gamepad2.dpad_down) {
                 StateClass.setGameStage(StateClass.GameStage.TELE_OP);
                 StateClass.setShootingTarget(StateClass.ShootingTarget.HIGH_GOAL);
-                shooterAngleServo.setServoPosition(.58);
+                shooterAngleServo.setServoPosition(highGoalServoPosition);
             }
 
 
@@ -473,7 +499,7 @@ public class MainTele extends LinearOpMode {
             telemetry.addData("turret power", turret.getControllerOutput());
             reportTurretTelemetry();
             //reportIntakeTelemetry();
-            //reportShooterTelemetry();
+            reportShooterTelemetry();
             telemetry.addData("x", myPose.getX());
             telemetry.addData("y", myPose.getY());
             telemetry.addData("heading", myPose.getHeading());
@@ -519,14 +545,8 @@ public class MainTele extends LinearOpMode {
                     StateClass.setShooterState(StateClass.ShooterState.WINDINGUP);
                 }
 
-                if (!readied) {
-                    //shooterIndexServo.servoOut();
-                }
-                if (StateClass.getShooterState() != StateClass.ShooterState.ATSPEED || StateClass.getServoRaiserState() != StateClass.ServoRaiserState.UP) {
-                    //shooterIndexServo.servoOut();
-                }
-
                 raisingServo.servoUp();
+                rotationServo.setPosition(TiltingRotationServo.angleToPosition(targetAngle));
                 if (ringCount > 0) {
                     //telemetry.addData("Ring Count", ringCount);
                     if (StateClass.getServoRaiserState() == StateClass.ServoRaiserState.UP) {
@@ -535,7 +555,7 @@ public class MainTele extends LinearOpMode {
 
 
                             if (StateClass.getIndexReady() == StateClass.IndexReady.INDEX_READY) {
-                                if (StateClass.getTurretPositionState() == StateClass.TurretPositionState.ONTARGET) {
+                                if (override || StateClass.getTurretPositionState() == StateClass.TurretPositionState.ONTARGET ) {
 
 
 
@@ -579,10 +599,13 @@ public class MainTele extends LinearOpMode {
                 } else {
                     shooterIndexServo.servoOut();
                     StateClass.setShootingSequenceState(StateClass.ShootingSequence.NOT_SHOOTING);
+                    //rotationServo.setPosition(TiltingRotationServo.frontDegreePoint);
                     readied = false;
                     StateClass.setIndexReady(StateClass.IndexReady.INDEX_NOTREADY);
                     turret.controller.reset();
-                    turret.stopTurret();
+                    raisingServo.servoDown();
+
+                    //turret.stopTurret();
                 }
             }
             else {
@@ -600,8 +623,11 @@ public class MainTele extends LinearOpMode {
             shooterIndexServo.servoOut();
             readied = false;
             StateClass.setIndexReady(StateClass.IndexReady.INDEX_NOTREADY);
-            turret.stopTurret();
-            turret.stopTurret();
+            //rotationServo.setPosition(TiltingRotationServo.frontDegreePoint);
+            raisingServo.servoDown();
+
+            //turret.stopTurret();
+            //turret.stopTurret();
             //turret.controller.reset();
         }
 
@@ -642,6 +668,7 @@ public class MainTele extends LinearOpMode {
         updateTurret();
         turret.setTurretTargetPosition(targetAngle);
         turret.updateTurret();
+
 
         //shooter.updateShooter(shooterMotor1.getVelocity());
 
