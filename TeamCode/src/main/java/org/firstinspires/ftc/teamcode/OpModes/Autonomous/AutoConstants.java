@@ -19,7 +19,7 @@ public class AutoConstants {
     //point4,
     public static Vector2d point4 = new Vector2d(-16, 34);
     //point5
-    public static Vector2d point5 = new Vector2d(-24, 34);
+    public static Vector2d point5 = new Vector2d(-28, 34);
     //point6
     public static Vector2d point6 = new Vector2d(42, 54);
     public static double points6Heading = Math.toRadians(45);

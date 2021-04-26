@@ -8,8 +8,8 @@ public class Intake {
 
     public static double intakeSpeed = 1.2;
     public static double intakeFastSpeed = 1.2;
-    public static double outtakeSpeed = -1.7;
-    public static double outtakeFastSpeed = -1.7;
+    public static double outtakeSpeed = -1.2;
+    public static double outtakeFastSpeed = -1.2;
     public static double startingIntakeTime = 200;
     CountDownTimer timer = new CountDownTimer();
 

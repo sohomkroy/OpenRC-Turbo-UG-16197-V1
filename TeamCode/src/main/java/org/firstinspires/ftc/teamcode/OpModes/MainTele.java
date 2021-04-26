@@ -66,7 +66,7 @@ import java.util.List;
 @Config
 @TeleOp(name="Test Comp", group="CompTele")
 public class MainTele extends LinearOpMode {
-    public static double highGoalServoPosition = .51;
+    public static double highGoalServoPosition = .50;
     public static int shot1Speed = -1300;
     public static int shot2Speed = -1300;
 
@@ -323,11 +323,10 @@ public class MainTele extends LinearOpMode {
                 //turret.stopTurret();
             }
 
-            if (StateClass.getIntakeState() == StateClass.IntakeState.STOPPED) {
-                stickServo.servoDown();
-            }
-            else {
+            if (gamepad2.left_stick_y<-.2) {
                 stickServo.servoUp();
+            } else if (gamepad2.left_stick_y>.2) {
+                stickServo.servoDown();
             }
 
             if (gamepad1.b) {
@@ -431,17 +430,17 @@ public class MainTele extends LinearOpMode {
             if (gamepad2.x) {
                 StateClass.setGameStage(StateClass.GameStage.TELE_OP);
                 StateClass.setShootingTarget(StateClass.ShootingTarget.LEFT_POWERSHOT);
-                shooterAngleServo.setServoPosition(.53);
+                shooterAngleServo.setServoPosition(.52);
             }
             if (gamepad2.y) {
                 StateClass.setGameStage(StateClass.GameStage.TELE_OP);
                 StateClass.setShootingTarget(StateClass.ShootingTarget.MIDDLE_POWERSHOT);
-                shooterAngleServo.setServoPosition(.53);
+                shooterAngleServo.setServoPosition(.52);
             }
             if (gamepad2.b) {
                 StateClass.setGameStage(StateClass.GameStage.TELE_OP);
                 StateClass.setShootingTarget(StateClass.ShootingTarget.RIGHT_POWERSHOT);
-                shooterAngleServo.setServoPosition(.53);
+                shooterAngleServo.setServoPosition(.52);
             }
 
 //            if (gamepad2.a) {
@@ -604,7 +603,7 @@ public class MainTele extends LinearOpMode {
                     StateClass.setIndexReady(StateClass.IndexReady.INDEX_NOTREADY);
                     turret.controller.reset();
                     raisingServo.servoDown();
-
+                    stickServo.servoUp();
                     //turret.stopTurret();
                 }
             }

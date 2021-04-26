@@ -54,9 +54,9 @@ import static org.firstinspires.ftc.teamcode.OpModes.Autonomous.AutoConstants.po
 
 @Autonomous
 public class FourRingAutoV2 extends LinearOpMode {
-    public static int shot1Speed = -1350;
-    public static int shot2Speed = -1350;
-    public static int shot3Speed = -1350;
+    public static int shot1Speed = -1300;
+    public static int shot2Speed = -1300;
+    public static int shot3Speed = -1300;
     public static double kP = 50;
     public static double kI = 1;
     public static double kD = 12;
@@ -142,20 +142,20 @@ public class FourRingAutoV2 extends LinearOpMode {
                 new MinVelocityConstraint(
                         Arrays.asList(
                                 new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                                new MecanumVelocityConstraint(5, DriveConstants.TRACK_WIDTH)
+                                new MecanumVelocityConstraint(10, DriveConstants.TRACK_WIDTH)
                         )
                 ),
                 new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL)).build();
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end()).lineTo(point5, new MinVelocityConstraint(
                         Arrays.asList(
                                 new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                                new MecanumVelocityConstraint(5, DriveConstants.TRACK_WIDTH)
+                                new MecanumVelocityConstraint(10, DriveConstants.TRACK_WIDTH)
                         )
                 ),
                 new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL)).build();
         Trajectory traj6 = drive.trajectoryBuilder(traj5.end().plus(new Pose2d(0, 0, Math.toRadians(-180))), true).lineToConstantHeading(point8).build();
         Trajectory traj7 = drive.trajectoryBuilder(traj6.end().plus(new Pose2d(0, 0, Math.toRadians(-180))), true).splineTo(point9, point9Heading).build();
-        Trajectory traj8 = drive.trajectoryBuilder(traj7.end()).forward(30).build();
+        Trajectory traj8 = drive.trajectoryBuilder(traj7.end()).forward(27).build();
 
                 //.splineTo(point9, point9Heading).build();
         //Trajectory traj9 = drive.trajectoryBuilder(traj8.end()).splineTo(point10, point10Heading).build();
@@ -350,7 +350,7 @@ public class FourRingAutoV2 extends LinearOpMode {
                         // go to target zone
                         currentState = State.TRAJECTORY_2_DONE;
                         //leftPowerShotTimer.setTime(300);
-                        leftPowerShotTimer.setTime(2500);
+                        leftPowerShotTimer.setTime(1000);
 
                     }
                     break;
@@ -409,11 +409,11 @@ public class FourRingAutoV2 extends LinearOpMode {
                         intake.intakeIn();
                         currentState = State.TRAJECTORY_4;
                         drive.followTrajectoryAsync(traj4);
-                    shot1Speed = -1400;
-                    shot2Speed = -1400;
-                    shot3Speed = -1400;
+//                    shot1Speed = -1400;
+//                    shot2Speed = -1400;
+//                    shot3Speed = -1400;
                     StateClass.setShootingTarget(StateClass.ShootingTarget.HIGH_GOAL);
-                    timer.setTime(2000);
+                    timer.setTime(3000);
 //                    }
 //                    break;
 
@@ -446,12 +446,12 @@ public class FourRingAutoV2 extends LinearOpMode {
                     StateClass.setIndexReady(StateClass.IndexReady.INDEX_READY);
 
                     if (StateClass.getShootingSequenceState()== StateClass.ShootingSequence.NOT_SHOOTING) {
-                        shot1Speed = -1420;
-                        shot2Speed = -1420;
-                        shot3Speed = -1420;
+//                        shot1Speed = -1420;
+//                        shot2Speed = -1420;
+//                        shot3Speed = -1420;
                         currentState = State.TRAJECTORY_5;
                         drive.followTrajectoryAsync(traj5);
-                        timer.setTime(2000);
+                        timer.setTime(3000);
                         intake.intakeIn();
                         //needsToShoot = false;
                     }
@@ -945,9 +945,15 @@ public class FourRingAutoV2 extends LinearOpMode {
         switch (StateClass.getShootingTarget()) {
             case HIGH_GOAL:
                 targetX = 72;
-                targetY = 34.125;
-                if (shooterAngleServo.servoPosition != 505) {
+                targetY = 30.125;
+                if (currentState == State.TRAJECTORY_5) {
                     shooterAngleServo.setServoPosition(.505);
+                }
+                else {
+                    //shooterAngleServo.setServoPosition(.505);
+                }
+                if (shooterAngleServo.servoPosition != 51) {
+                    shooterAngleServo.setServoPosition(.51);
                 }
                 break;
             case LEFT_POWERSHOT:

@@ -5,7 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 @Config
 public class StickServo {
     public static double  servoUpPosition = 0;
-    public static double servoDownPosition = 0.53;
+    public static double servoDownPosition = 0.51;
     public static double timeUp = 50;
     public static double timeDown = 50;
     private double servoPosition;
