@@ -1,3 +1,7 @@
+##16197 Fork of OpenRC
+
+This repo contains the code used to program a FIRST Tech Challenge Robot for the Ultimate Goal Challenge. This is a video of our robot in action:
+https://www.youtube.com/watch?v=rP0xXqz1uoo
 
 ## OpenRC-Turbo
 
